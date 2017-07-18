@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 15-Jul-2017
+# @Last modified time: 18-Jul-2017
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -21,8 +21,6 @@ Builder.load_string('''
 <MainPage>:
     content_page: _content_page
     size_hint: 1, 1
-    title_bgColor: '#ffffff'
-    title: ''
     BoxLayout:
         orientation: 'vertical'
         size_hint: 1, 1
@@ -53,8 +51,6 @@ Builder.load_string('''
 <Page>:
     content_page: _content_page
     size_hint: 1, 1
-    title_bgColor: '#ffffff'
-    title: ''
     BoxLayout:
         orientation: 'vertical'
         size_hint: 1, 1
@@ -88,7 +84,8 @@ Builder.load_string('''
                     orientation: 'horizontal'
                     font_size: '15dp'
                     border_size: 0
-                    bgColor:'#ecd5c4'
+                    bgColor:'#EAF2B3'
+                    color: 0,0,0,1
                     on_release: root.parent.back_page()
 
         AnchorLayout:
@@ -104,7 +101,7 @@ Builder.load_string('''
 ''')
 
 class MainPage(RelativeLayout):
-    title = StringProperty()
+    title = StringProperty('')
     title_bgColor = StringProperty("#ffffff")
     page_manager = ObjectProperty(None)
 
@@ -120,7 +117,7 @@ class MainPage(RelativeLayout):
 
 
 class Page(RelativeLayout):
-    title = StringProperty()
+    title = StringProperty('')
     title_bgColor = StringProperty("#ffffff")
     id_page = StringProperty("")
     bgColor = StringProperty("#ffffff")
@@ -132,6 +129,13 @@ class Page(RelativeLayout):
         else:
             self.content_page.add_widget(widget)
 
+    def collide_point(self, x, y):
+       return (x > self.x and x < self.x +self.width) and (y > self.y and y < self.y +self.height)
+
+    def on_touch_down(self, touch, *args):
+       super(Page, self).on_touch_down(touch)
+       if self.collide_point(touch.x, touch.y):
+           return True
 
 
 class PageManager(FloatLayout):
@@ -142,34 +146,29 @@ class PageManager(FloatLayout):
         super(PageManager, self).__init__(**kargs)
 
     def add_widget(self, widget):
-        try:
-            widget.page_manager = self
-        except:
-            raise ("Error", "Widget not is MainPage or Page types")
-
+        widget.page_manager = self
         if type(widget) is MainPage:
             self.stack_pages.append(widget)
-            super(PageManager,self).add_widget(widget)
         elif type(widget) is Page:
             widget.bind(id_page=self.on_id_pages)
+
+        super(PageManager,self).add_widget(widget)
+
+    def on_width(self, w, val):
+        for child in self.pages.values():
+            child.pos = val +10, 0
 
     def on_id_pages(self, w, val):
         self.pages[val] = w
 
+
     def navigate(self, nav):
         w = self.pages[nav]
-        w.pos = self.width+10, 0
         self.stack_pages.append(self.pages[nav])
-        super(PageManager, self).add_widget(w)
         ai = Animation(x=0, duration=.1)
         ai.start(w)
 
     def back_page(self):
-        w = self.stack_pages[-1]
-        ai = Animation(x=self.width+10, duration=.1)
-        ai.bind(on_complete=self.on_complete)
-        ai.start(w)
-
-    def on_complete(self, ani, w):
         w = self.stack_pages.pop()
-        self.remove_widget(w)
+        ai = Animation(x=self.width+10, duration=.1)
+        ai.start(w)
