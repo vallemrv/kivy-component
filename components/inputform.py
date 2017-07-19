@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 18-Jul-2017
+# @Last modified time: 19-Jul-2017
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -14,161 +14,24 @@ from kivy.properties import (StringProperty, ObjectProperty,
 from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.metrics import dp
+import components.resources as res
 
-
-Builder.load_string('''
-#:import get_color kivy.utils.get_color_from_hex
-#:import ButtonIcon components.buttons.ButtonIcon
-#:import res components.resources
-<FloatTextInput>:
-    input_text: _input
-    size_hint: 1, 1
-    canvas:
-        Color:
-            rgba: .4,.4,.4,.4
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'top'
-        size_hint: 1, 1
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'center'
-            size_hint: .9, None
-            height: dp(100)
-            BoxLayout:
-                orientation: 'horizontal'
-                TextInput:
-                    id: _input
-                    size_hint: .7, None
-                    height: dp(35)
-                    font_size: root.font_size
-                    multiline: False
-                    focus: root.focus
-                    text: root.text
-                ButtonIcon:
-                    icon: res.FA_CHECK
-                    size_hint: None, None
-                    height: dp(35)
-                    width: dp(35)
-                    font_size: '12dp'
-                    border_size: 0
-                    bgColor: '#a5e5f9'
-                    on_release:
-                        root.text = _input.text
-                        root.controller.hide(root.input, _input.text)
-
-
-<ValleTextInput>:
-    AnchorLayout:
-        anchor_y: 'center'
-        anchor_x: 'center'
-        canvas:
-            Color:
-                rgba: get_color(root.bgColor)
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        GridLayout:
-            cols: 1
-            size_hint: .9, .9
-            Label:
-                size_hint: 1, None
-                text: root.label
-                text_size: self.size
-                halign: 'left'
-                valign: 'middle'
-                color: .6,.6,.6,.9
-                font_size: dp(15)
-                height: dp(25)
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint: 1, 1
-                Label:
-                    text: root.text
-                    font_size: root.font_size
-                    text_size: self.size
-                    size_hint: 1, 1
-                    halign: 'left'
-                    valign: 'middle'
-                    id: _text
-                    color: get_color(root.color)
-
-
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                size_hint: 1, None
-                height: dp(1)
-                canvas:
-                    Color:
-                        rgba: 0,0,0,1
-                    Rectangle:
-                        size: self.size
-                        pos: _text.x, _text.y-dp(3)
-
-
-<InputForm>:
-    float_input: _float_input
-    form_content: _form_content
-    canvas.before:
-        Color:
-            rgba: get_color(self.bgColor)
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    ScrollView:
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, None
-            GridLayout:
-                cols: 1
-                spacing: dp(5)
-                size_hint: 1, 1
-                id: _form_content
-
-
-            AnchorLayout:
-                anchor_y: 'center'
-                anchor_x: 'right'
-                size_hint: .95, .8
-                ButtonIcon:
-                    text: 'Aceptar'
-                    icon: res.FA_CHECK
-                    orientation: 'horizontal'
-                    size_hint: .5, None
-                    height: dp(40)
-                    font_size: '20dp'
-                    bgColor: '#EAF2B3'
-                    color: 0,0,0,1
-                    border_size: '1dp'
-                    icon_font_size: '20dp'
-                    on_release: root.enviar_form()
-
-
-    FloatTextInput:
-        id: _float_input
-        pos: root.width+10, 0
-        controller: root
-
-                    ''')
-
+Builder.load_file(res.get_kv('inputform'))
 
 
 class FloatTextInput(RelativeLayout):
     controller = ObjectProperty(None)
     input = ObjectProperty(None)
-    font_size = StringProperty("15dp")
     text = StringProperty('')
     focus = BooleanProperty(False)
+    label = StringProperty("")
 
     def __init__(self, **kargs):
         super(FloatTextInput, self).__init__(**kargs)
 
     def on_input(self, w, val):
         self.text = val.text
+        self.label = val.label
 
     def collide_point(self, x, y):
        return (x > self.x and x < self.x +self.width) and (y > self.y and y < self.y +self.height)
@@ -239,14 +102,18 @@ class InputForm(RelativeLayout):
         ani.start(self.float_input)
 
     def add_widget(self, widget):
-        if len(self.children) < 2:
+        if len(self.children) < 3:
             super(InputForm, self).add_widget(widget)
         else:
             if type(widget) is ValleTextInput:
                 self.model[widget.name] = widget.text
-            height = self.form_content.parent.height + dp(20) + widget.height
+            height = self.form_content.parent.height  + widget.height + dp(25)
             self.form_content.parent.height = height
             self.form_content.add_widget(widget, 0)
+            widget.bind(height=self.on_widget_height)
+
+    def on_widget_height(self, w, val):
+        print val
 
     def add_model(self, model, order):
         self.model = model

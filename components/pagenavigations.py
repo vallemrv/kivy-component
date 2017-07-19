@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 18-Jul-2017
+# @Last modified time: 19-Jul-2017
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -12,93 +12,9 @@ from kivy.properties import (StringProperty, ListProperty,
                              ObjectProperty, DictProperty)
 from kivy.animation import Animation
 from kivy.lang import Builder
+import components.resources as res
 
-Builder.load_string('''
-#:import LabelColor components.labels.LabelColor
-#:import ButtonIcon components.buttons.ButtonIcon
-#:import get_color kivy.utils.get_color_from_hex
-
-<MainPage>:
-    content_page: _content_page
-    size_hint: 1, 1
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint: 1, 1
-        AnchorLayout:
-            id: _header
-            size_hint: 1, None
-            height: dp(50)
-            anchor_y: 'top'
-            anchor_x: 'center'
-            canvas:
-                Color:
-                    rgb: 0,0,0
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-            LabelColor:
-                size_hint: 1, .99
-                text: root.title
-                bgColor: root.title_bgColor
-                border_size: 0
-                font_size: '20dp'
-
-
-        AnchorLayout:
-            id: _content_page
-            size_hint: 1, 1
-
-<Page>:
-    content_page: _content_page
-    size_hint: 1, 1
-    BoxLayout:
-        orientation: 'vertical'
-        size_hint: 1, 1
-        AnchorLayout:
-            id: _header
-            size_hint: 1, None
-            height: dp(50)
-            anchor_y: 'top'
-            anchor_x: 'center'
-            canvas:
-                Color:
-                    rgb: 0,0,0
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-            LabelColor:
-                size_hint: 1, .99
-                text: root.title
-                bgColor: root.title_bgColor
-                border_size: 0
-                font_size: '20dp'
-            AnchorLayout:
-                anchor_y: 'center'
-                anchor_x: 'right'
-                size_hint: .85, 1
-                ButtonIcon:
-                    size_hint: None, .7
-                    width: dp(60)
-                    text: 'back'
-                    icon: res.FA_ANGLE_LEFT
-                    orientation: 'horizontal'
-                    font_size: '15dp'
-                    border_size: 0
-                    bgColor:'#EAF2B3'
-                    color: 0,0,0,1
-                    on_release: root.parent.back_page()
-
-        AnchorLayout:
-            id: _content_page
-            size_hint: 1, 1
-            canvas.before:
-                Color:
-                    rgb: get_color(root.bgColor)
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-
-''')
+Builder.load_file(res.get_kv("pagenavigations"))
 
 class MainPage(RelativeLayout):
     title = StringProperty('')

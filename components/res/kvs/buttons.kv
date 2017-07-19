@@ -121,13 +121,15 @@
             size_hint: None, 1
             width: self.height
             canvas.before:
+                Color:
+                    rgba: 0,0,0,1
                 Rectangle:
                     source: res.IMG_SHADOW
                     pos: root.x, root.y
                     size: self.width, self.width
             BoxLayout:
                 id: _shape
-                size_hint: .85, .85
+                size_hint: .8, .8
                 canvas.before:
                     Color:
                         group: 'shape_up'
