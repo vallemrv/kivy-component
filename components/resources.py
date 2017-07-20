@@ -2,7 +2,7 @@
 # @Date:   08-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 14-Jul-2017
+# @Last modified time: 20-Jul-2017
 # @License: Apache license vesion 2.0
 
 
@@ -34,7 +34,9 @@ FA_LIST = unichr(0xf03a)
 FA_CUBE = unichr(0xf1b2)
 FA_FOLDER = unichr(0xf07b)
 FA_TABLE = unichr(0xf0ce)
-
+FA_SPINNER = unichr(0xf110)
+FA_CIRCLE = unichr(0xf1ce)
+FA_REFRESH = unichr(0xf021)
 
 def get_kv(name):
     name = name if "kv" in name else name+".kv"
