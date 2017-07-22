@@ -4,11 +4,13 @@
 #:import FloatButton components.buttons.FloatButton
 #:import res components.resources
 <FloatTextInput>:
-    input_text: _input
+    sel_color: _sel_color
+    content_input: _content_input
+    content: _content
     size_hint: 1, 1
     canvas:
         Color:
-            rgba: .4,.4,.4,.6
+            rgba: .4,.4,.4,.4
         Rectangle:
             size: self.size
             pos: self.pos
@@ -16,11 +18,43 @@
         anchor_x: 'center'
         anchor_y: 'top'
         size_hint: 1, .85
+        id: _content
+        BoxLayout:
+            id: _sel_color
+            text:'#b57dbd'
+            orientation: 'vertical'
+            size_hint: .9, .8
+            spacing: 3
+            LabelColor:
+                size_hint: 1, None
+                height: dp(35)
+                text: root.label
+                font_size: '15dp'
+                text_size: self.size
+                color: "#000000"
+                bgColor: '#fcf6e1'
+                border_size:'1dp'
+
+            ColorPicker:
+                orientation: 'vertical'
+                hex_color: _sel_color.text
+                on_color:
+                    _sel_color.text = self.hex_color
+            ButtonIcon:
+                size_hint: 1, .1
+                orientation: 'horizontal'
+                text: 'Sel color'
+                icon: res.FA_CHECK
+                color: 0,0,0,1
+                bgColor: _sel_color.text
+                on_release:
+                    root.controller.hide(root.input, _sel_color.text)
         AnchorLayout:
             anchor_x: 'center'
             anchor_y: 'center'
             size_hint: .9, None
             height: dp(150)
+            id: _content_input
             GridLayout:
                 cols: 1
                 spacing: dp(5)
@@ -47,6 +81,9 @@
                         multiline: False
                         focus: root.focus
                         text: root.text
+                        write_tab: False
+                        on_focus:
+                            root.focus = self.focus 
                     ButtonIcon:
                         icon: res.FA_CHECK
                         size_hint: None, None
@@ -144,7 +181,7 @@
                 font_size: '20dp'
                 bgColor: '#84cded'
                 color: 0,0,0,1
-                on_release: root.enviar_form()
+                on_release: root.form_check()
 
 
     FloatTextInput:

@@ -3,13 +3,13 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 19-Jul-2017
+# @Last modified time: 22-Jul-2017
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.properties import (StringProperty, ObjectProperty,
+from kivy.properties import (StringProperty, ObjectProperty, OptionProperty,
                              ListProperty, DictProperty, BooleanProperty)
 from kivy.lang import Builder
 from kivy.animation import Animation
@@ -25,13 +25,36 @@ class FloatTextInput(RelativeLayout):
     text = StringProperty('')
     focus = BooleanProperty(False)
     label = StringProperty("")
+    content = ObjectProperty(None)
+    content_input = ObjectProperty(None)
+    sel_color = ObjectProperty(None)
+    type_input = OptionProperty("text",
+                        options=('text', 'color', 'password', 'date'))
 
     def __init__(self, **kargs):
         super(FloatTextInput, self).__init__(**kargs)
 
+    def on_focus(self, w, val):
+        if not val and self.type_input == 'text':
+            self.text = w.text
+            self.controller.hide(self.input, w.text)
+
+
+    def print_type(self):
+        if self.content:
+            self.content.clear_widgets()
+            if self.type_input == 'color' and self.sel_color:
+                self.sel_color.text = self.text
+                self.content.add_widget(self.sel_color)
+            if self.type_input == 'text' and self.content_input:
+
+                self.content.add_widget(self.content_input)
+
     def on_input(self, w, val):
         self.text = val.text
         self.label = val.label
+        self.type_input = val.type_input
+        self.print_type()
 
     def collide_point(self, x, y):
        return (x > self.x and x < self.x +self.width) and (y > self.y and y < self.y +self.height)
@@ -50,6 +73,9 @@ class ValleTextInput(ButtonBehavior, RelativeLayout):
     font_size = StringProperty("30dp")
     controller = ObjectProperty(None)
     name = StringProperty("")
+    type_input = OptionProperty("text",
+                          options=('text', 'color', 'password', 'date'))
+
 
 
     def __init__(self, model=None, **kargs):
@@ -76,12 +102,18 @@ class InputForm(RelativeLayout):
                 "all":{
                     'font_size': '20dp',
                     'size_hint': (1, None),
-                    'height': '50dp'
+                    'height': '50dp',
+                    'type_input': 'text'
                 }
         })
 
     def __init__(self, **kargs):
         super(InputForm, self).__init__(**kargs)
+
+    def __clear_model__(self):
+        self.model = {}
+        self.form_content.clear_widgets()
+
 
     def show(self, input):
         ani = Animation(x=0, duration=0.05)
@@ -110,21 +142,22 @@ class InputForm(RelativeLayout):
             height = self.form_content.parent.height  + widget.height + dp(25)
             self.form_content.parent.height = height
             self.form_content.add_widget(widget, 0)
-            widget.bind(height=self.on_widget_height)
 
-    def on_widget_height(self, w, val):
-        print val
 
-    def add_model(self, model, order):
+    def add_model(self, model, columns=None, tmpl=None):
+        self.__clear_model__()
         self.model = model
-        for k in order:
-            if k in self.plantilla:
+        columns = columns if columns else model.keys()
+        for k in columns:
+            if tmpl and k in tmpl:
+                plantilla = tmpl.get(k).copy()
+            elif k in self.plantilla:
                 plantilla = self.plantilla.get(k).copy()
             else:
                 plantilla = self.plantilla.get("all").copy()
 
             plantilla["name"] = k
-            plantilla["text"] = model[k]
+            plantilla["text"] = unicode(model[k])
             plantilla["controller"] = self
             if not "label" in plantilla:
                 plantilla["label"] = k.title()
@@ -132,7 +165,6 @@ class InputForm(RelativeLayout):
             input = ValleTextInput(model=plantilla)
             self.add_widget(input)
 
-    def enviar_form(self):
-        print self.model
+    def form_check(self):
         if self.on_press:
             self.on_press(self.model)

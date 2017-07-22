@@ -2,7 +2,7 @@
 # @Date:   10-May-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 14-Jul-2017
+# @Last modified time: 20-Jul-2017
 # @License: Apache license vesion 2.0
 
 
@@ -24,7 +24,7 @@ Builder.load_string('''
     anchor_x: 'center'
     anchor_x: 'center'
     container: _contenedor
-    content_titulo: _content_titulo
+    header: _content_titulo
     size_hint: 1, 1
     spacing: 2
     GridLayout:
@@ -38,7 +38,7 @@ Builder.load_string('''
             height: dp(35)
             Label:
                 color: 0, 0, 0, 1
-                text: root.titulo
+                text: root.title
                 font_size: '40dp'
                 size_hint: 1, 1
         ScrollView:
@@ -55,7 +55,7 @@ Builder.load_string('''
 class Botonera(AnchorLayout):
     font_size = ObjectProperty("30dp")
     columnas = NumericProperty(0)
-    titulo = StringProperty("Titulo")
+    title = StringProperty("Titulo")
     botones = ObjectProperty(None)
     onPress = ObjectProperty(allownone=False)
     selectable = BooleanProperty(False)
@@ -64,10 +64,18 @@ class Botonera(AnchorLayout):
     scrollable = BooleanProperty(False)
     content_size_hint = ListProperty([1, 1])
     spacing = NumericProperty()
+    header = ObjectProperty(None)
 
     def __init__(self, **kargs):
         super(Botonera, self).__init__(**kargs)
 
+    def on_header(self, w, val):
+        if self.title == 'None':
+            self.header.parent.remove_widget(self.header)
+
+    def on_title(self, w, val):
+        if self.title == 'None' and self.header:
+            self.header.parent.remove_widget(self.header)
 
     def on_scrollable(self, w, val):
         if self.scrollable and self.container and self.botones:

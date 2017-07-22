@@ -1,9 +1,9 @@
 # @Author: Manuel Rodriguez <valle>
-# @Date:   19-Jul-2017
+# @Date:   20-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Filename: spin.py
 # @Last modified by:   valle
-# @Last modified time: 20-Jul-2017
+# @Last modified time: 21-Jul-2017
 # @License: Apache license vesion 2.0
 
 
