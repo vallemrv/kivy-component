@@ -1,7 +1,14 @@
 #:import LabelColor components.labels.LabelColor
 #:import ButtonIcon components.buttons.ButtonIcon
 #:import get_color kivy.utils.get_color_from_hex
-
+<PageManager>:
+    size_hint: 1,1
+    canvas:
+        Color:
+            rgb: get_color(root.bg_color)
+        Rectangle:
+            size: self.size
+            pos: self.pos
 <MainPage>:
     content_page: _content_page
     size_hint: 1, 1
@@ -23,7 +30,7 @@
             LabelColor:
                 size_hint: 1, .99
                 text: root.title
-                bgColor: root.title_bgColor
+                bg_color: root.title_bg_color
                 border_size: 0
                 font_size: '20dp'
 
@@ -53,7 +60,7 @@
             LabelColor:
                 size_hint: 1, .99
                 text: root.title
-                bgColor: root.title_bgColor
+                bg_color: root.title_bg_color
                 border_size: 0
                 font_size: '20dp'
             AnchorLayout:
@@ -66,10 +73,10 @@
                     text: 'back'
                     icon: res.FA_ANGLE_LEFT
                     orientation: 'horizontal'
-                    font_size: '15dp'
+                    font_size: '12dp'
                     border_size: 0
-                    bgColor:'#fcf6e1'
-                    color: 0,0,0,1
+                    bg_color:'#9d9d9d'
+                    color: 1,1,1,1
                     on_release: root.parent.back_page()
 
         AnchorLayout:
@@ -77,7 +84,7 @@
             size_hint: 1, 1
             canvas.before:
                 Color:
-                    rgb: get_color(root.bgColor)
+                    rgb: get_color(root.bg_color)
                 Rectangle:
                     size: self.size
                     pos: self.pos

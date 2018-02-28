@@ -14,7 +14,7 @@
 
 
 <LabelBase>:
-    border_size: dp(5)
+    border_size: dp(3)
     container: _container
     LabelDecorators:
         pos: root.pos
@@ -31,12 +31,13 @@
             size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
             canvas.before:
                 Color:
-                    rgb: get_color(root.bgColor)
+                    rgb: get_color(root.bg_color)
                 Rectangle:
                     size: self.size
                     pos: self.pos
 
 <LabelColor>:
+    color: "#000000"
     Label:
         size_hint: .9, 1
         font_size: root.font_size
@@ -47,6 +48,7 @@
         color: get_color(root.color)
 
 <LabelClicable>:
+    color: "#000000"
     Label:
         size_hint: .9, 1
         font_size: root.font_size
@@ -58,6 +60,7 @@
 
 
 <LabelIcon>:
+    color: "#000000"
     BoxLayout:
         orientation: 'horizontal'
         size_hint: .9, 1

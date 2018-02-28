@@ -3,12 +3,12 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 21-Jul-2017
+# @Last modified time: 06-Feb-2018
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import (StringProperty, ListProperty,
+from kivy.properties import (StringProperty, ListProperty, NumericProperty,
                              ObjectProperty, DictProperty)
 from kivy.animation import Animation
 from kivy.lang import Builder
@@ -16,12 +16,12 @@ import components.resources as res
 
 Builder.load_file(res.get_kv("pagenavigations"))
 
+#The home page is the first page that is displayed and usually contains a menu.
 class MainPage(RelativeLayout):
     title = StringProperty('')
-    title_bgColor = StringProperty("#ffffff")
+    title_bg_color = StringProperty("#ffffff")
     page_manager = ObjectProperty(None)
     show = ObjectProperty(None)
-
 
     def __init__(self, **kargs):
         super(MainPage, self).__init__(**kargs)
@@ -34,13 +34,13 @@ class MainPage(RelativeLayout):
 
 
 
+#They are the ones that contain the pages of the application
 class Page(RelativeLayout):
     title = StringProperty('')
-    title_bgColor = StringProperty("#ffffff")
+    title_bg_color = StringProperty("#ffffff")
     id_page = StringProperty("")
-    bgColor = StringProperty("#ffffff")
+    bg_color = StringProperty("#ffffff")
     show = ObjectProperty(None)
-
 
     def add_widget(self, widget):
         if len(self.children) < 1:
@@ -56,13 +56,15 @@ class Page(RelativeLayout):
        if self.collide_point(touch.x, touch.y):
            return True
 
-
+#This is the main class for navigations manage
 class PageManager(FloatLayout):
     pages = DictProperty({})
     stack_pages = ListProperty([])
+    bg_color = StringProperty('#FFFFFF')
 
     def __init__(self, **kargs):
         super(PageManager, self).__init__(**kargs)
+
 
     def add_widget(self, widget):
         widget.page_manager = self
@@ -73,6 +75,7 @@ class PageManager(FloatLayout):
 
         super(PageManager,self).add_widget(widget)
 
+
     def on_width(self, w, val):
         for child in self.pages.values():
             child.pos = val +10, 0
@@ -82,12 +85,15 @@ class PageManager(FloatLayout):
 
 
     def navigate(self, nav):
-        w = self.pages[nav]
-        self.stack_pages.append(self.pages[nav])
-        ai = Animation(x=0, duration=.1)
-        ai.start(w)
-        if w.show:
-            w.show(self)
+        if nav in self.pages:
+            w = self.pages[nav]
+            self.stack_pages.append(self.pages[nav])
+            self.remove_widget(w)
+            self.add_widget(w)
+            ai = Animation(x=0, duration=.1)
+            ai.start(w)
+            if w.show:
+                w.show(self)
 
     def back_page(self):
         w = self.stack_pages.pop()

@@ -2,12 +2,13 @@
 # @Date:   11-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 14-Jul-2017
+# @Last modified time: 06-Feb-2018
 # @License: Apache license vesion 2.0
 
 
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.widget import Widget
+from kivy.uix.label import Label
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.vector import Vector
 from kivy.graphics import Color, Rectangle, Ellipse
@@ -26,13 +27,12 @@ class LabelDecorators(AnchorLayout):
         super(LabelDecorators, self).__init__(**kargs)
 
 class LabelBase(Widget):
-    bgColor = StringProperty("#4594be")
+    bg_color = StringProperty("#878787")
     color = StringProperty("#000000")
     text = StringProperty()
     font_size = StringProperty('30dp')
     listchild = ListProperty([])
-    border_size = NumericProperty(5)
-
+    border_size = NumericProperty("3dp")
 
     def on_container(self, root, val):
         for w in self.listchild:
@@ -49,9 +49,12 @@ class LabelBase(Widget):
         else:
             self.listchild.append(widget)
 
+
 class LabelColor(LabelBase):
     def __init__(self, **kargs):
         super(LabelColor, self).__init__(**kargs)
+        if self.bg_color < "#555555" and self.color == "#000000":
+            self.color == "#FFFFFF"
 
 class LabelClicableBase(ButtonBehavior, LabelBase):
     tag = ObjectProperty(None, allowNone=True)
@@ -77,7 +80,7 @@ class LabelClicableBase(ButtonBehavior, LabelBase):
             self.shape_down.add(color)
             self.shape_down.add(Ellipse(pos=pos, size=size))
             self.container.canvas.before.add(self.shape_down)
-            Clock.schedule_once(self.remove_shape_down, .05)
+            Clock.schedule_once(self.remove_shape_down, .1)
             super(LabelClicableBase, self).on_touch_down(touch)
             return True
 

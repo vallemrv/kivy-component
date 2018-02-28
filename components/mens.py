@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: mensaje.py
 # @Last modified by:   valle
-# @Last modified time: 20-Jul-2017
+# @Last modified time: 13-Aug-2017
 # @License: Apache license vesion 2.0
 
 from kivy.uix.anchorlayout import AnchorLayout
@@ -20,7 +20,7 @@ Builder.load_string('''
         anchor_x: 'center'
         size_hint: 1, .5
         Label:
-            size_hint: 1,1
+            size_hint: .9,.9
             text_size: self.size
             valign: 'center'
             halign: 'center'

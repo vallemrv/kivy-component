@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # @Author: Manuel Rodriguez <valle>
 # @Date:   11-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
 # @Last modified time: 11-Jul-2017
 # @License: Apache license vesion 2.0
-# -*- coding: utf-8 -*-
+
 
 #:import res components.resources
 #:import get_color kivy.utils.get_color_from_hex
@@ -16,7 +17,6 @@
 
 
 <ButtonBase>:
-    border_size: 5
     container: _container
     Decorators:
         pos: root.pos
@@ -33,9 +33,9 @@
             size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
             canvas.before:
                 Color:
-                    rgb: get_color(root.bgColor)
+                    rgb: get_color(root.bg_color)
                 Rectangle:
-                    size: self.size
+                    size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
                     pos: self.pos
 
 <ButtonColor>:
@@ -101,7 +101,7 @@
                 Label:
                     font_name: res.FONT_AWESOME
                     text: root.icon
-                    font_size: root.icon_font_size
+                    font_size: root.font_size_icon
                     color: root.color
                     text_size: self.size
                     halign: root.icon_align
@@ -133,7 +133,7 @@
                 canvas.before:
                     Color:
                         group: 'shape_up'
-                        rgb: get_color(root.bgColor)
+                        rgb: get_color(root.bg_color)
                     Ellipse:
                         group: 'shape_up'
                         pos: self.x, self.y

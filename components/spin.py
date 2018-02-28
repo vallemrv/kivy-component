@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: spin.py
 # @Last modified by:   valle
-# @Last modified time: 21-Jul-2017
+# @Last modified time: 06-Feb-2018
 # @License: Apache license vesion 2.0
 
 
@@ -47,7 +47,6 @@ class Spin(AnchorLayout):
     bussy = BooleanProperty(False)
     angle = NumericProperty(0)
 
-
     def __init__(self, **kargs):
         super(Spin, self).__init__(**kargs)
         self.anim = Animation(angle = 360, duration=1.5)
@@ -76,8 +75,15 @@ class Spin(AnchorLayout):
         ani = Animation(x=0, duration=.1)
         ani.start(self)
 
-
     def hide(self):
         self.bussy = False
         ani = Animation(x=self.width+10, duration=.1)
         ani.start(self)
+
+    def collide_point(self, x, y):
+        return (x > self.x and x < self.x +self.width) and (y > self.y and y < self.y +self.height)
+
+    def on_touch_down(self, touch, *args):
+        super(Spin, self).on_touch_down(touch)
+        if self.collide_point(touch.x, touch.y):
+            return True

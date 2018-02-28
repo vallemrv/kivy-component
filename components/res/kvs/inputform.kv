@@ -3,9 +3,85 @@
 #:import ButtonIcon components.buttons.ButtonIcon
 #:import FloatButton components.buttons.FloatButton
 #:import res components.resources
-<FloatTextInput>:
-    sel_color: _sel_color
-    content_input: _content_input
+<FormControl>:
+    content: _content_control
+    AnchorLayout:
+        anchor_y: 'center'
+        anchor_x: 'center'
+        canvas:
+            Color:
+                rgba: get_color(root.bg_color)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        BoxLayout:
+            orientation: 'vertical'
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                id: _content_control
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                size_hint: 1, None
+                height: dp(1)
+                canvas:
+                    Color:
+                        rgba: 0,0,0,1
+                    Rectangle:
+                        size: self.size
+
+<InputTextControl>:
+    GridLayout:
+        cols: 1
+        size_hint: .9, .9
+        Label:
+            size_hint: 1, None
+            text: root.label
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            color: .6,.6,.6,.9
+            font_size: dp(15)
+            height: dp(25)
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 1
+            Label:
+                text: root.text
+                font_size: root.font_size
+                text_size: self.size
+                size_hint: 1, 1
+                halign: 'left'
+                valign: 'middle'
+                id: _text
+                color: get_color(root.color)
+
+<CheckBoxControl>:
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: .9, .9
+        canvas:
+            Color:
+                rgba: get_color(root.bg_color)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: root.label
+            text_size: self.size
+            halign: 'left'
+            valign: 'middle'
+            color: .6,.6,.6,.9
+            font_size: dp(15)
+            height: dp(25)
+        CheckBox:
+            size_hint: .2, 1
+            active: root.active
+            on_active:
+                root.active = self.active
+
+<FloatControl>:
     content: _content
     size_hint: 1, 1
     canvas:
@@ -19,139 +95,91 @@
         anchor_y: 'top'
         size_hint: 1, .85
         id: _content
+
+<FloatColorInput>:
+    label: ''
+    text: '#b57dbd'
+    controller: None
+    input: None
+    orientation: 'vertical'
+    size_hint: .9, .8
+    spacing: 3
+    LabelColor:
+        size_hint: 1, None
+        height: dp(35)
+        text: root.label
+        font_size: '15dp'
+        text_size: self.size
+        color: "#000000"
+        bg_color: '#fcf6e1'
+        border_size:'1dp'
+    ColorPicker:
+        orientation: 'horizontal'
+        hex_color: root.text
+        on_color:
+            root.text = self.hex_color
+    ButtonIcon:
+        size_hint: 1, .2
+        orientation: 'horizontal'
+        text: 'Sel color'
+        icon: res.FA_CHECK
+        color: 0,0,0,1
+        bg_color: root.text
+        on_release:
+            root.input.text = root.text
+            root.controller.hide(root.input)
+
+<FloatTextInput>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+    size_hint: .9, None
+    height: dp(150)
+    GridLayout:
+        cols: 1
+        spacing: dp(5)
+        size_hint: .9, .9
+        LabelColor:
+            size_hint: 1, None
+            height: dp(35)
+            text: root.label
+            font_size: '15dp'
+            text_size: self.size
+            color: "#000000"
+            bg_color: '#fcf6e1'
+            border_size:'1dp'
         BoxLayout:
-            id: _sel_color
-            text:'#b57dbd'
-            orientation: 'vertical'
-            size_hint: .9, .8
-            spacing: 3
-            LabelColor:
-                size_hint: 1, None
+            orientation: 'horizontal'
+            size_hint: 1, None
+            height: dp(40)
+            TextInput:
+                id: _input
+                size_hint: .7, None
                 height: dp(35)
-                text: root.label
-                font_size: '15dp'
-                text_size: self.size
-                color: "#000000"
-                bgColor: '#fcf6e1'
-                border_size:'1dp'
+                font_size: dp(20)
+                multiline: False
+                focus: root.focus
+                text: root.text
+                write_tab: False
+                on_focus:
+                    if root.active: root.input.text = self.text
+                    if root.active: root.text = self.text
+                    if root.active: root.focus = self.focus
 
-            ColorPicker:
-                orientation: 'vertical'
-                hex_color: _sel_color.text
-                on_color:
-                    _sel_color.text = self.hex_color
             ButtonIcon:
-                size_hint: 1, .1
-                orientation: 'horizontal'
-                text: 'Sel color'
                 icon: res.FA_CHECK
-                color: 0,0,0,1
-                bgColor: _sel_color.text
-                on_release:
-                    root.controller.hide(root.input, _sel_color.text)
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'center'
-            size_hint: .9, None
-            height: dp(150)
-            id: _content_input
-            GridLayout:
-                cols: 1
-                spacing: dp(5)
-                size_hint: .9, .9
-                LabelColor:
-                    size_hint: 1, None
-                    height: dp(35)
-                    text: root.label
-                    font_size: '15dp'
-                    text_size: self.size
-                    color: "#000000"
-                    bgColor: '#fcf6e1'
-                    border_size:'1dp'
-
-                BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint: 1, None
-                    height: dp(40)
-                    TextInput:
-                        id: _input
-                        size_hint: .7, None
-                        height: dp(35)
-                        font_size: dp(20)
-                        multiline: False
-                        focus: root.focus
-                        text: root.text
-                        write_tab: False
-                        on_focus:
-                            root.focus = self.focus 
-                    ButtonIcon:
-                        icon: res.FA_CHECK
-                        size_hint: None, None
-                        height: dp(35)
-                        width: dp(35)
-                        font_size: '12dp'
-                        border_size: 0
-                        bgColor: '#a5e5f9'
-                        on_release:
-                            root.text = _input.text
-                            root.controller.hide(root.input, _input.text)
-
-
-<ValleTextInput>:
-    AnchorLayout:
-        anchor_y: 'center'
-        anchor_x: 'center'
-        canvas:
-            Color:
-                rgba: get_color(root.bgColor)
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        GridLayout:
-            cols: 1
-            size_hint: .9, .9
-            Label:
-                size_hint: 1, None
-                text: root.label
-                text_size: self.size
-                halign: 'left'
-                valign: 'middle'
-                color: .6,.6,.6,.9
-                font_size: dp(15)
-                height: dp(25)
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint: 1, 1
-                Label:
-                    text: root.text
-                    font_size: root.font_size
-                    text_size: self.size
-                    size_hint: 1, 1
-                    halign: 'left'
-                    valign: 'middle'
-                    id: _text
-                    color: get_color(root.color)
-
-
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                size_hint: 1, None
-                height: dp(1)
-                canvas:
-                    Color:
-                        rgba: 0,0,0,1
-                    Rectangle:
-                        size: self.size
-                        pos: _text.x, _text.y-dp(3)
-
+                size_hint: None, None
+                height: dp(35)
+                width: dp(35)
+                font_size: '12dp'
+                border_size: 0
+                bg_color: '#a5e5f9'
 
 <InputForm>:
     float_input: _float_input
     form_content: _form_content
     canvas.before:
         Color:
-            rgba: get_color(self.bgColor)
+            rgba: get_color(self.bg_color)
         Rectangle:
             size: self.size
             pos: self.pos
@@ -179,12 +207,11 @@
                 size_hint: None, None
                 size: dp(70), dp(70)
                 font_size: '20dp'
-                bgColor: '#84cded'
+                bg_color: '#84cded'
                 color: 0,0,0,1
                 on_release: root.form_check()
 
-
-    FloatTextInput:
+    FloatControl:
         id: _float_input
-        pos: root.width+10, 0
+        pos: root.width*2, 0
         controller: root
