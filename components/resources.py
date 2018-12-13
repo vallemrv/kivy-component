@@ -5,7 +5,12 @@
 # @Last modified time: 19-Feb-2018
 # @License: Apache license vesion 2.0
 
+try:
+    unichr(0xf090)
+except:
+    unichr = chr
 
+    
 import os
 
 PATH_RES = os.path.join(os.path.dirname(__file__), "res")

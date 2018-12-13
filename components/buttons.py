@@ -21,7 +21,7 @@ from kivy.vector import Vector
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.metrics import dp
-import resources as res
+import components.resources as res
 Builder.load_file(res.get_kv("buttons"))
 
 class Decorators(AnchorLayout):
@@ -127,8 +127,6 @@ class ButtonBase(ButtonBehavior, Widget):
         self.shape_down.clear()
 
 
-
-
 class ButtonColor(ButtonBase):
     text = StringProperty()
     selectable = BooleanProperty(False)
@@ -144,7 +142,6 @@ class ButtonColor(ButtonBase):
         super(ButtonColor, self).on_press()
         if self.selectable:
             self.selected = not self.selected
-
 
 class ButtonImg(ButtonBase):
     src = StringProperty()

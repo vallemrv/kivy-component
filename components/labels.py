@@ -18,7 +18,7 @@ from kivy.properties import (StringProperty, ObjectProperty,
                              ListProperty, OptionProperty, NumericProperty)
 from kivy.clock import Clock
 from math import ceil
-import resources as res
+import components.resources as res
 
 Builder.load_file(res.get_kv("labels"))
 

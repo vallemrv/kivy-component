@@ -12,6 +12,7 @@ from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty
 from kivy.utils import get_color_from_hex
 
+
 Builder.load_string('''
 #:import get_color kivy.utils.get_color_from_hex
 <MenuListView>:
