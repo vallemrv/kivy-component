@@ -3,44 +3,41 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 06-Feb-2018
+# @Last modified time: 2019-05-26T17:08:44+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import (StringProperty, ListProperty, NumericProperty,
-                             ObjectProperty, DictProperty)
+                             ObjectProperty, DictProperty, BooleanProperty)
 from kivy.animation import Animation
 from kivy.lang import Builder
 import components.resources as res
 
 Builder.load_file(res.get_kv("pagenavigations"))
 
-#The home page is the first page that is displayed and usually contains a menu.
-class MainPage(RelativeLayout):
-    title = StringProperty('')
-    title_bg_color = StringProperty("#ffffff")
-    page_manager = ObjectProperty(None)
-    show = ObjectProperty(None)
-
-    def __init__(self, **kargs):
-        super(MainPage, self).__init__(**kargs)
-
-    def add_widget(self, widget):
-        if len(self.children) < 1:
-            super(MainPage, self).add_widget(widget)
-        else:
-            self.content_page.add_widget(widget)
-
-
 
 #They are the ones that contain the pages of the application
 class Page(RelativeLayout):
     title = StringProperty('')
-    title_bg_color = StringProperty("#ffffff")
-    id_page = StringProperty("")
-    bg_color = StringProperty("#ffffff")
-    show = ObjectProperty(None)
+    title_bg_color = StringProperty((1,1,1,1))
+    id_page = StringProperty(None)
+    bg_color = ObjectProperty((1,1,1,1))
+
+    __main__ = BooleanProperty(False)
+    __button_back__ = ObjectProperty(None)
+
+    def on___button_back__(self, w, val):
+        if self.__main__:
+            self.__head__.remove_widget(self.__button_back__)
+
+
+
+    def on_bg_color(self, w, val):
+        if type(val) is str and "#" in val:
+            self.bg_color = get_color_from_hex(val)
+        else:
+            self.bg_color = val
 
     def add_widget(self, widget):
         if len(self.children) < 1:
@@ -60,25 +57,25 @@ class Page(RelativeLayout):
 class PageManager(FloatLayout):
     pages = DictProperty({})
     stack_pages = ListProperty([])
-    bg_color = StringProperty('#FFFFFF')
 
     def __init__(self, **kargs):
         super(PageManager, self).__init__(**kargs)
 
 
     def add_widget(self, widget):
-        widget.page_manager = self
-        if self.__esPage__(widget, MainPage):
-            self.stack_pages.append(widget)
-        elif self.__esPage__(widget, Page):
+        if type(widget) is Page:
+            widget.manager = self
             widget.bind(id_page=self.on_id_pages)
-
-        super(PageManager,self).add_widget(widget)
+            super(PageManager,self).add_widget(widget)
+            if len(self.children) == 1:
+                widget.__main__ = True
+                self.stack_pages.append(widget)
 
 
     def on_width(self, w, val):
         for child in self.pages.values():
-            child.pos = val +10, 0
+            if not child.__main__:
+                child.pos = val +10, 0
 
     def on_id_pages(self, w, val):
         self.pages[val] = w
@@ -92,16 +89,9 @@ class PageManager(FloatLayout):
             self.add_widget(w)
             ai = Animation(x=0, duration=.1)
             ai.start(w)
-            if w.show:
-                w.show(self)
 
     def back_page(self):
-        w = self.stack_pages.pop()
-        ai = Animation(x=self.width+10, duration=.1)
-        ai.start(w)
-
-    def __esPage__(self, widget, clase):
-        esPage = type(widget) == clase
-        for base in widget.__class__.__bases__:
-            esPage = esPage or (base == clase)
-        return esPage
+        if len(self.stack_pages) > 1:
+            w = self.stack_pages.pop()
+            ai = Animation(x=self.width+10, duration=.1)
+            ai.start(w)

@@ -4,7 +4,7 @@
 # @Date:   10-May-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 12-Feb-2018
+# @Last modified time: 2019-05-26T16:27:29+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.anchorlayout import AnchorLayout
@@ -14,228 +14,153 @@ from kivy.properties import (BooleanProperty, StringProperty, AliasProperty,
                              ObjectProperty, NumericProperty, ListProperty)
 from kivy.lang import Builder
 from kivy.metrics import dp
-from components.buttons import ButtonColor, ButtonIcon
+from components.buttons import ButtonColor, ButtonIcon, ButtonImg
 from math import ceil
-import resources as res
+from datetime import datetime
+import components.resources as res
 
 Builder.load_string('''
 #:import res components.resources
-#:import ButtonIcon components.buttons.ButtonIcon
-<Header>:
-    font_size_title: '20dp'
-    title: 'None'
-    size_hint: 1, None
-    height: root._height
-    orientation: 'horizontal'
-    Label:
-        color: 0, 0, 0, 1
-        text: root.title
-        font_size: root.font_size_title
-        size_hint: 1, 1
-
-<Content>:
-    content: _content
-    content_size_hint: 1, 1
-    cols: 2
-    spacing: 2
-    ScrollView:
-        size_hint: 1, 1
-        GridLayout:
-            id: _content
-            cols: root.cols
-            spacing: root.spacing
-            size_hint: root.content_size_hint
+#:import ButtonColor components.buttons
 
 
 <GridButtons>:
-    anchor_x: 'center'
-    anchor_x: 'center'
-    main: _main
-    size_hint: 1, 1
-    spacing: 2
-    GridLayout:
-        size_hint: 1, 1
-        cols: 1
-        spacing: 20
-        id: _main
+    __header__: _header
+    __button_salir__: _button_salir
+    __content__: _content
+    __main_content__: _main_content
+    canvas:
+        Color:
+            rgba: root.bg_color
+        Rectangle:
+            pos: root.pos
+            size: root.size
+    BoxLayout:
+        size_hint: .95, .95
+        orientation: 'vertical'
+        spacing: '10dp'
+        id: _main_content
+        BoxLayout:
+            anchor_x: 'right'
+            anchor_y: "top"
+            size_hint: 1, .1
+            id: _header
+            Label:
+                size_hint: .8, 1
+                text: root.title
+                color: 0,0,0,1
+                font_size: root.title_size
+            ButtonIcon:
+                size_hint: .2, 1
+                icon: res.FA_CHECK
+                icon_size: '5dp'
+                font_size: '10dp'
+                icon_align: 'center'
+                text: "Terminar"
+                color: 0,0,0,1
+                id: _button_salir
+                bg_color: '#92CAF1'
+                on_press: root.salir()
+        GridLayout:
+            cols: root.cols
+            size_hint: 1,.9
+            id: _content
 
 
 ''')
-class Content(AnchorLayout):
-    content_size_hint = ListProperty([])
-    cols = NumericProperty(1)
-    spacing = NumericProperty(1)
-    scrollable = BooleanProperty(False)
-    def __init__(self, **kargs):
-        super(Content, self).__init__(**kargs)
-
-    def add_widget(self, w):
-        if len(self.children) <= 0:
-            super(Content, self).add_widget(w)
-        else:
-            self.content.add_widget(w)
-            if self.scrollable:
-                self.content.height = dp(100) * ceil(len(self.content.children) / float(self.content.cols))
-
-    def clear_widgets(self):
-        self.content.clear_widgets()
-
-    def on_scrollable(self, w, val):
-        if self.scrollable and self.content:
-            self.content_size_hint = (1, None)
-            self.content.height = dp(100) * ceil(len(self.content.children) / float(self.content.cols))
-        else:
-            self.content_size_hint = (1, 1)
-
-
-
-class Header(BoxLayout):
-    font_size_title = ObjectProperty('40dp')
-    title = StringProperty("None")
-
-    def get__height(self):
-        return dp(self.font_size_title.replace('dp', '')) + dp(20)
-    _height = AliasProperty(get__height, bind=['font_size_title'])
-
-    def __init__(self, **kargs):
-        super(Header, self).__init__(**kargs)
-
 class GridButtons(AnchorLayout):
-    font_size = ObjectProperty("30dp")
-    font_size_title = ObjectProperty("30dp")
-    fg_color = ListProperty([0,0,0,1])
-    title = StringProperty("None")
-    buttons = ListProperty([])
-    onPress = ObjectProperty(allownone=False)
-    item_selected = ListProperty([])
-    text_button_enter = StringProperty("sel 0")
+    bg_color = ObjectProperty([1,1,1,1])
     cols = NumericProperty(1)
-    spacing = NumericProperty(2)
-    main = ObjectProperty(None)
-    selected = NumericProperty(0)
-    scrollable = BooleanProperty(False)
-    selectable = BooleanProperty(False)
+    buttons = ListProperty([])
+    selectable = BooleanProperty(True)
     column_color = StringProperty("bg_color")
     column_text = StringProperty("text")
-    custom_childs = ListProperty([])
+    action_buttons = ObjectProperty(None)
+    title = StringProperty("Titulo")
+    hide_title = BooleanProperty(False)
+    font_size = NumericProperty('25dp')
+    title_size = NumericProperty('35dp')
+    auto = BooleanProperty(True)
+
+    def get_count(self):
+        return len(self.__buttons_fisic__)
+    count = AliasProperty(get_count, bind=["__buttons_fisic__"])
 
 
-    def __init__(self, **kargs):
-        super(GridButtons, self).__init__(**kargs)
-        self.header = Header()
-        self.bind(title=self.header.setter("title"))
-        self.bind(font_size_title=self.header.setter('font_size_title'))
-        self.content = Content()
-        self.bind(cols=self.content.setter('cols'))
-        self.bind(spacing=self.content.setter('spacing'))
-        self.bind(scrollable=self.content.setter('scrollable'))
+    __item_selected__ = ListProperty([])
+    __buttons_fisic__ = ListProperty([])
 
-    def add_widget(self, w):
-        if type(w) in [Header, Content, GridLayout]:
-            super(GridButtons, self).add_widget(w)
+
+    def on___buttons_fisic__(self, w, val):
+        num = len(self.__buttons_fisic__)
+        if self.auto:
+            if num < 4:
+                self.cols = 1
+            elif num >= 4 and num <= 6:
+                self.cols = 2
+            elif num >= 6 and num <= 9:
+                self.cols = 3
+            elif num >9:
+                self.cols = 4
+
+    def on___item_selected__(self, w, val):
+        sel = len(self.__item_selected__)
+        if sel > 0:
+            self.__button_salir__.text = "Sel %s" % sel
         else:
-            self.custom_childs.append(w)
-            self.content.add_widget(w)
-            if self.cols <= 0:
-                self.content.cols = self.get_columns(len(self.buttons) + len(self.custom_childs))
-            else:
-                self.content.cols  = self.cols
+            self.__button_salir__.text = "Terminar"
 
-    def rellenar_custom_childs(self):
-        if self.cols <= 0:
-            self.content.cols = self.get_columns(len(self.buttons) + len(self.custom_childs))
-        else:
-            self.content.cols  = self.cols
-        for child in self.custom_childs:
-            self.content.add_widget(child)
-
-    def on_main(self, w, l):
-        self.main.add_widget(self.content)
-
-    def on_title(self, w, val):
-        if self.title == 'None' and len(self.main.children) == 2:
-            self.main.remove_widget(self.header)
-        elif self.title != 'None' and len(self.main.children) == 1 :
-            self.main.clear_widgets()
-            self.main.add_widget(self.header, index=0)
-            self.main.add_widget(self.content)
-            if self.selectable:
-                self.add_button_enter()
-
-    def on_cols(self, w, v):
-        self.set_buttons()
-
+    def on_hide_title(self, w, val):
+        if  val:
+            self.__main_content__.remove_widget(self.__header__)
 
     def on_selectable(self, w, val):
-        if self.selectable and self.header and len(self.header.children) == 1:
-            self.add_button_enter()
-        elif not self.selectable and self.header and len(self.header.children) == 2:
-            self.header.remove_widget(self.header.children[0])
+        if not val:
+            self.__header__.remove_widget(self.__button_salir__)
 
-    def on_item_selected(self, w, val):
-        if self.header:
-            if val != "" and len(self.header.children) == 1:
-                self.add_button_enter()
-            self.text_button_enter = "sel "+ str(len(self.item_selected))
-        self.selected = len(self.item_selected)
+    def add_widget(self, w):
+        if type(w) in [ButtonColor, ButtonIcon, ButtonImg]:
+            self.__buttons_fisic__.append(w)
+            w.selectable = self.selectable
+            w.font_size = self.font_size
+            w.bind(on_press=self.on_press)
+            self.bind(font_size=w.setter("font_size"))
+            self.bind(selectable=w.setter('selectable'))
+            self.__content__.add_widget(w)
+        else:
+            super(GridButtons, self).add_widget(w)
 
+    def on_buttons(self, w, val):
+        self.__content__.clear_widgets()
+        self.__buttons_fisic__ = []
+        for btn in self.buttons:
+            btnC = ButtonColor(tag=btn,   selectable=self.selectable)
+            self.__buttons_fisic__.append(btnC)
+            if "selected" in btn:
+                btnC.selected = btn.get("selected")
+                self.__item_selected__.append(btnC)
+            if self.column_text in btn:
+                btnC.text=btn.get(self.column_text)
+            if self.column_color in btn:
+                btnC.bg_color = btn.get(self.column_color)
+            if "icon" in btn:
+                btnC.font_name = res.FONT_AWESOME
+                btnC.text = btn.get("icon")
+            btnC.font_size = self.font_size
+            btnC.bind(on_press=self.on_press)
+            self.bind(selectable=btnC.setter('selectable'))
+            self.__content__.add_widget(btnC)
 
-    def add_button_enter(self):
-        if self.selectable and self.header and len(self.header.children) == 1:
-            btn = ButtonIcon(text=self.text_button_enter,size_hint=(.6, 1),
-                        font_size='15dp', icon_scale='0dp', orientation='horizontal',icon=res.FA_ENTER)
-            self.header.add_widget(btn)
-            self.bind(text_button_enter=btn.setter('text'))
-            btn.bind(on_release=self.on_button_enter_press)
-
-
-    def on_buttons(self, key, value):
-        self.set_buttons()
-
-    def set_buttons(self):
-        self.content.clear_widgets()
-        self.rellenar_custom_childs()
-        self.item_selected = []
-        if len(self.buttons) > 0:
-            for btn in self.buttons:
-                btnC = ButtonColor(tag=btn, color=self.fg_color,  selectable=self.selectable)
-                if "selected" in btn:
-                    btnC.selected = btn.get("selected")
-                    self.item_selected.append(btnC)
-                if self.column_text in btn:
-                    btnC.text=btn.get(self.column_text)
-                if self.column_color in btn:
-                    btnC.bg_color = btn.get(self.column_color)
-                    if btnC.bg_color <= "#333333":
-                        btnC.color = (1,1,1,1)
-                if "icon" in btn:
-                    btnC.font_name = res.FONT_AWESOME
-                    btnC.text = btn.get("icon")
-                btnC.font_size = self.font_size
-                btnC.bind(on_press=self.on_press)
-                self.bind(selectable=btnC.setter('selectable'))
-                self.content.add_widget(btnC)
-
-    def get_columns(self, num):
-        if num <= 5:
-            return 1
-        elif num > 5 and num < 10:
-            return 3
-        elif num >= 10:
-            return 4
-
-    def on_exit(self):
-        self.onPress(self.item_selected)
-
-    def on_button_enter_press(self, btn):
-        if self.onPress:
-            self.onPress(self.item_selected)
 
     def on_press(self, btn):
-        if self.selectable:
+        if self.selectable and hasattr(btn, 'selected'):
             if not btn.selected:
-                self.item_selected.append(btn)
+                self.__item_selected__.append(btn)
             else:
-                self.item_selected.remove(btn)
-        elif self.onPress:
-            self.onPress([btn])
+                self.__item_selected__.remove(btn)
+        elif self.action_buttons:
+            self.action_buttons([btn])
+
+    def salir(self):
+        if self.action_buttons:
+            self.action_buttons(self.__item_selected__)

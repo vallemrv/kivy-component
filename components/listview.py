@@ -3,25 +3,25 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: listview.py
 # @Last modified by:   valle
-# @Last modified time: 06-Feb-2018
+# @Last modified time: 2019-05-11T20:28:55+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty, NumericProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty, NumericProperty
 from kivy.utils import get_color_from_hex
 
 
 Builder.load_string('''
 #:import get_color kivy.utils.get_color_from_hex
 <MenuListView>:
-    list: _listado
-    scroll: _scroll
+    __list__: _listado
+    __scroll__: _scroll
     spacing: 5
     canvas.before:
         Color:
-            rgb: get_color(root.bg_color)
+            rgba: root.bg_color
         Rectangle:
             size: self.size
             pos: self.pos
@@ -39,24 +39,31 @@ Builder.load_string('''
                     ''')
 
 class MenuListView(AnchorLayout):
-    bg_color = StringProperty("#b8b3ac")
+    bg_color = ObjectProperty((1,1,1,1))
     row_height = NumericProperty("70dp")
+
+    def on_color(self, w, val):
+        if "#" in val:
+            val = "".join(val)
+            self.color = get_color_from_hex(val)
+        else:
+            self.color = val
 
     def add_widget(self, widget):
         if type(widget) is ScrollView:
             super(MenuListView, self).add_widget(widget)
         else:
-            self.add_linea(widget)
+            self.__list__.add_widget(widget)
 
     def add_linea(self, widget):
-        self.list.add_widget(widget)
-        self.scroll.scroll_y = 0
+        self.__list__.add_widget(widget)
+        self.__scroll__.scroll_y = 0
 
     def rm_linea(self, widget):
-        self.list.remove_widget(widget)
+        self.__list__.remove_widget(widget)
 
     def rm_all_widgets(self):
-        self.list.clear_widgets()
+        self.__list__.clear_widgets()
 
     def scroll_up(self, up=1):
-        self.scroll.scroll_y = up
+        self.__scroll__.scroll_y = up

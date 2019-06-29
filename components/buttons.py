@@ -4,7 +4,7 @@
 # @Date:   09-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 09-Feb-2018
+# @Last modified time: 2019-05-12T01:26:52+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.button import Button
@@ -12,7 +12,7 @@ from kivy.uix.label import Label
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
-from kivy.utils import get_color_from_hex
+from kivy.utils import get_color_from_hex, get_hex_from_color
 from kivy.properties import (ObjectProperty, StringProperty, AliasProperty,NumericProperty,
                              ListProperty, BooleanProperty, OptionProperty)
 from kivy.graphics import Color, Rectangle, Ellipse
@@ -21,7 +21,9 @@ from kivy.vector import Vector
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.metrics import dp
+from kivy.logger import Logger
 import components.resources as res
+
 Builder.load_file(res.get_kv("buttons"))
 
 class Decorators(AnchorLayout):
@@ -29,15 +31,20 @@ class Decorators(AnchorLayout):
         super(Decorators, self).__init__(**kargs)
 
 class ButtonBase(ButtonBehavior, Widget):
+    #Para guardar datos en el boton y recuperarlas
+    #despues en el evento.
     tag = ObjectProperty(None, allownone=True)
-    bg_color = StringProperty('#707070')
-    font_size = StringProperty("20dp")
-    container = ObjectProperty(None)
-    listchild = ListProperty([])
-    color = ListProperty([1, 1, 1, 1])
-    shape_up = ObjectProperty(None)
-    shape_down = ObjectProperty(None)
+    #Colores del boton texto y fondo acepta hexagesimal y rgba
+    bg_color = ObjectProperty([.5, .5, .5, 1])
+    color = ObjectProperty([1, 1, 1, 1])
+    font_size = ObjectProperty("20dp")
     border_size = NumericProperty('3dp')
+
+    __container__ = ObjectProperty(None)
+    __listchild__ = ListProperty([])
+    __shape_up__ = ObjectProperty(None)
+    __shape_down__ = ObjectProperty(None)
+
 
     def __init__(self, **kargs):
         super(ButtonBase, self).__init__(**kargs)
@@ -49,83 +56,91 @@ class ButtonBase(ButtonBehavior, Widget):
         else:
             self.color = val
 
+
     def on_border_size(self, w, v):
-        if self.container:
-            self.container.size = (self.container.parent.width-self.border_size,
-                                   self.container.parent.height-self.border_size)
+        if self.__container__:
+            self.__container__.size = (self.__container__.parent.width-self.border_size,
+                                   self.__container__.parent.height-self.border_size)
 
 
-    def on_container(self, root, val):
-        self.container.bind(pos=self.on_container_pos)
-        self.container.size = (self.container.parent.width-self.border_size,
-                               self.container.parent.height-self.border_size)
+    def on___container__(self, root, val):
+        self.__container__.bind(pos=self.on___container___pos)
+        self.__container__.size = (self.__container__.parent.width-self.border_size,
+                               self.__container__.parent.height-self.border_size)
 
 
-        for w in self.listchild:
-            self.container.add_widget(w)
+        for w in self.__listchild__:
+            self.__container__.add_widget(w)
         self.draw_color()
 
-    def on_listchild(self, w, val):
-        if self.container != None:
-            for w in self.listchild:
-                self.container.add_widget(w)
+    def on___listchild__(self, w, val):
+        if self.__container__ != None:
+            for w in self.__listchild__:
+                self.__container__.add_widget(w)
 
     def add_widget(self, widget):
         if type(widget) is Decorators:
             super(ButtonBase, self).add_widget(widget)
         else:
-            self.listchild.append(widget)
+            self.__listchild__.append(widget)
 
 
-    def on_container_pos(self, root, val):
-        if self.shape_up == None:
-            self.shape_up = InstructionGroup(grup="shape_up")
+    def on___container___pos(self, root, val):
+        if self.__shape_up__  == None:
+            self.__shape_up__  = InstructionGroup(grup="__shape_up__ ")
         else:
-            self.container.canvas.before.remove(self.shape_up)
-            self.shape_up.clear()
+            self.__container__.canvas.before.remove(self.__shape_up__ )
+            self.__shape_up__ .clear()
         self.draw_color()
 
     def on_bg_color(self, root, val):
-        if self.shape_up == None:
-            self.shape_up = InstructionGroup(grup="shape_up")
+        if "#" in val:
+            val = "".join(val)
+            self.bg_color = get_color_from_hex(val)
         else:
-            self.container.canvas.before.remove(self.shape_up)
-            self.shape_up.clear()
+            self.bg_color = val
+
+        if get_hex_from_color(self.bg_color) <= "#33333333":
+            self.color = (1,1,1,1)
+        else:
+            self.color = (0,0,0,1)
+
+        if self.__shape_up__  == None:
+            self.__shape_up__  = InstructionGroup(grup="__shape_up__ ")
+        else:
+            self.__container__.canvas.before.remove(self.__shape_up__ )
+            self.__shape_up__ .clear()
         self.draw_color()
 
     def draw_color(self):
-        if self.container and self.shape_up:
-            size = self.container.size
-            color = Color()
-            color.rgb = get_color_from_hex(self.bg_color)
-            self.shape_up.add(color)
-            self.shape_up.add(Rectangle(pos=self.container.pos, size=size))
-            self.container.canvas.before.add(self.shape_up)
+        if self.__container__ and self.__shape_up__ :
+            size = self.__container__.size
+            color = Color(*self.bg_color)
+            self.__shape_up__ .add(color)
+            self.__shape_up__ .add(Rectangle(pos=self.__container__.pos, size=size))
+            self.__container__.canvas.before.add(self.__shape_up__ )
 
 
     def collide_point(self, x, y):
         return (x > self.x and x < self.x +self.width) and (y > self.y and y < self.y +self.height)
 
-    def on_touch_down(self, touch, *args):
-        super(ButtonBase, self).on_touch_down(touch)
-        if self.collide_point(touch.x, touch.y):
-            size = self.container.size
-            if self.shape_down == None:
-                self.shape_down = InstructionGroup(group="shape_down")
-            else:
-                self.container.canvas.before.remove(self.shape_down)
-                self.shape_down.clear()
-            color = Color(0,0,0,.4)
-            self.shape_down.add(color)
-            self.shape_down.add(Rectangle(pos=self.container.pos, size=size))
-            self.container.canvas.before.add(self.shape_down)
-            Clock.schedule_once(self.remove_shape_down, .1)
-            return True
+    def on_press(self):
+        size = self.__container__.size
+        if self.__shape_down__ == None:
+            self.__shape_down__ = InstructionGroup(group="__shape_down__")
+        else:
+            self.__container__.canvas.before.remove(self.__shape_down__)
+            self.__shape_down__.clear()
+        color = Color(0,0,0,.4)
+        self.__shape_down__.add(color)
+        self.__shape_down__.add(Rectangle(pos=self.__container__.pos, size=size))
+        self.__container__.canvas.before.add(self.__shape_down__)
+        super(ButtonBase, self).on_press()
 
-    def remove_shape_down(self, dt):
-        self.container.canvas.before.remove(self.shape_down)
-        self.shape_down.clear()
-
+    def on_release(self):
+        self.__container__.canvas.before.remove(self.__shape_down__)
+        self.__shape_down__.clear()
+        super(ButtonBase, self).on_release()
 
 class ButtonColor(ButtonBase):
     text = StringProperty()
@@ -146,123 +161,111 @@ class ButtonColor(ButtonBase):
 class ButtonImg(ButtonBase):
     src = StringProperty()
     text = StringProperty()
-    label_container = ObjectProperty(None, allownone=False)
+    img_align = OptionProperty("center", options=("center", "left", "right"))
+
+    __label_container__ = ObjectProperty(None, allownone=False)
+    __orientation__ = OptionProperty("vertical", options=("vertical", "horizontal"))
+    __label_size_hint__ = ListProperty([1, .2])
+    __widget_image__ = ObjectProperty(None)
+
+
 
     def __init__(self, **kargs):
         super(ButtonImg, self).__init__(**kargs)
 
 
-    def on_label_container(self, w, val):
-        if self.text != "" and len(self.label_container.children) == 1:
+    def on___label___container(self, w, val):
+        if self.text != "" and len(self.__label_container__.children) == 1:
             self.add_label()
 
     def on_text(self, w, val):
-        if val != ""  and len(self.label_container.children) == 1:
+        if val != ""  and len(self.__label_container__.children) == 1:
             self.add_label()
 
     def add_label(self):
         label = Label(text=self.text, font_size=self.font_size,
-                      color=self.color,size_hint= (1, .3),
+                      color=self.color, size_hint= self.__label_size_hint__,
                       halign= 'center', valign='middle')
-        label.bind(size=label.setter("text_size"))
+
+        self.bind(__label_size_hint__=label.setter('size_hint'))
+        self.bind(size=label.setter("text_size"))
         self.bind(text=label.setter('text'))
         self.bind(color=label.setter('color'))
         self.bind(font_size=label.setter('font_size'))
-        self.label_container.add_widget(label)
+        self.__label_container__.add_widget(label)
+
+    def on_img_align(self, w, val):
+        if val == "center":
+            self.__label_size_hint__ = (1, .2)
+            self.__orientation__ = "vertical"
+        elif val == "left" or val == "right":
+            self.__orientation__ = "horizontal"
+            self.__label_size_hint__ = (.8, 1)
+            self.__widget_image__.size_hint_x = .15
+            if val == "right":
+                self.__label_container__.remove_widget(self.__widget_image__)
+                self.__label_container__.add_widget(self.__widget_image__)
+
 
 class ButtonIcon(ButtonBase):
     icon = StringProperty('')
     text = StringProperty('')
-    label_container = ObjectProperty(allownone=False)
-    orientation = OptionProperty("vertial", options=("vertical", "horizontal"))
-    label_size_hint = ListProperty([1, .3])
-    icon_size_hint = ListProperty([1, .7])
-    icon_align = OptionProperty("center", options=("center","left","right"))
-    font_size = ObjectProperty("20dp")
-    icon_scale = ObjectProperty("20dp")
+    icon_align = OptionProperty("center", options=("center", "left", "right"))
+    icon_size = ObjectProperty("20dp")
+
+    __label_size_hint__ = ListProperty([1, .2])
+    __label_container__ = ObjectProperty(allownone=False)
+    __orientation__ = OptionProperty("vertical", options=("vertical", "horizontal"))
+    __widget_icon__ = ObjectProperty(None)
+
 
     def get_font_size_icon(self):
-        return  dp(self.font_size.replace('dp','')) + dp(self.icon_scale.replace('dp',''))
+        if type(self.font_size) is str:
+            self.font_size = dp(self.font_size.replace('dp',''))
+        if type(self.icon_size) is str:
+            self.icon_size = dp(self.icon_size.replace('dp',''))
+        return  self.font_size + self.icon_size
 
-    font_size_icon = AliasProperty(get_font_size_icon, bind=["font_size", "icon_scale"])
+    font_size_icon = AliasProperty(get_font_size_icon, bind=["font_size", "icon_size"])
 
     def __init__(self, **kargs):
         super(ButtonIcon, self).__init__(**kargs)
 
     def on_label_container(self, w, val):
-        if self.text != "" and len(self.label_container.children) == 1:
+        if self.text != "" and len(self.__label_container__.children) == 1:
             self.add_label()
 
     def on_text(self, w, val):
-        if val != ""  and  self.label_container and len(self.label_container.children) == 1:
+        if val != ""  and  self.__label_container__ and len(self.__label_container__.children) == 1:
             self.add_label()
 
     def add_label(self):
         label = Label(text=self.text, font_size=self.font_size,
-                      color=self.color, halign= 'center', valign='middle')
-        label.bind(size=label.setter('text_size'))
+                               color=self.color, halign= 'center',
+                               valign='middle', size_hint=self.__label_size_hint__)
+
+        self.bind(__label_size_hint__=label.setter('size_hint'))
+        self.bind(size=label.setter('text_size'))
         self.bind(text=label.setter('text'))
         self.bind(color=label.setter('color'))
         self.bind(font_size=label.setter('font_size'))
-        self.bind(label_size_hint=label.setter('size_hint'))
-        self.label_container.add_widget(label)
+        self.__label_container__.add_widget(label)
 
-    def on_orientation(self, w, val):
-        self.label_size_hint = (1, .3) if val == "vertical" else (.7, 1)
-        self.icon_size_hint = (1, .8) if val == "vertical" else (.2, 1)
-        self.icon_align = "center" if val == "vertical" else "left"
+        if self.icon_align == "right":
+            self.__label_container__.remove_widget(self.__widget_icon__)
+            self.__label_container__.add_widget(self.__widget_icon__)
 
 
 
 
-class FloatButton(ButtonBehavior, Widget):
-    bg_color = StringProperty("#108710")
-    icon = StringProperty(res.FA_EDIT)
-    font_size = StringProperty("30dp")
-    color = ListProperty([1, 1, 1, 1])
-
-    def __init__(self, *args, **kwargs):
-        super(FloatButton, self).__init__(*args, **kwargs)
-        self.shape_up = None
-        self.shape_down = None
-
-    def on_color(self, w, val):
-        if "#" in val:
-            val = "".join(val)
-            self.color = get_color_from_hex(val)
-
-    def on_bg_color(self, root, val):
-        if self.shape_up == None:
-            self.shape_up = InstructionGroup(grup="shape_up")
-        else:
-            self.shape.canvas.remove(self.shape_up)
-            self.shape_up.clear()
-        color = Color()
-        color.rgb = get_color_from_hex(val)
-        self.shape_up.add(color)
-        self.shape_up.add(Ellipse(pos=self.shape.pos, size=self.shape.size))
-        self.shape.canvas.before.add(self.shape_up)
-        self.shape_up.clear()
-
-
-    def collide_point(self, x, y):
-        return Vector(x, y).distance(self.center) <= self.width / 2
-
-    def on_touch_down(self, touch, *args):
-        super(FloatButton, self).on_touch_down(touch)
-        if self.collide_point(touch.x, touch.y):
-            if self.shape_down == None:
-                self.shape_down = InstructionGroup(grup="shape_down")
-            else:
-                self.shape.canvas.before.remove(self.shape_down)
-                self.shape_down.clear()
-            color = Color(0,0,0,.4)
-            self.shape_down.add(color)
-            self.shape_down.add(Ellipse(pos=self.shape.pos, size=self.shape.size))
-            self.shape.canvas.before.add(self.shape_down)
-            Clock.schedule_once(self.remove_shape_down, .05)
-            return True
-
-    def remove_shape_down(self, dt):
-        self.shape.canvas.before.remove(self.shape_down)
-        self.shape_down.clear()
+    def on_icon_align(self, w, val):
+        if val == "center":
+            self.__label_size_hint__ = (1, .2)
+            self.__orientation__ = "vertical"
+        elif val == "left" or val == "right":
+            self.__orientation__ = "horizontal"
+            self.__label_size_hint__ = (.8, 1)
+            self.__widget_icon__.size_hint_x = .15
+            if val == "right":
+                self.__label_container__.remove_widget(self.__widget_icon__)
+                self.__label_container__.add_widget(self.__widget_icon__)

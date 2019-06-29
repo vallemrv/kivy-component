@@ -5,7 +5,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 09-Feb-2018
+# @Last modified time: 2019-05-26T17:05:41+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -177,10 +177,9 @@ class CheckBoxControl(FormControl):
         if self.controller:
             self.controller.on_model_chage(self)
 
-class InputForm(RelativeLayout):
+class Form(RelativeLayout):
     bg_color = StringProperty("#ffffff")
     model = DictProperty({})
-    form_content = ObjectProperty(None)
     on_press = ObjectProperty(None)
     plantilla = DictProperty({
                 "all":{
@@ -190,6 +189,8 @@ class InputForm(RelativeLayout):
                     'type_control': 'text'
                 }
         })
+
+    __form_content__ = ObjectProperty(None)
 
     def __init__(self, **kargs):
         super(InputForm, self).__init__(**kargs)
@@ -204,15 +205,15 @@ class InputForm(RelativeLayout):
     def hide(self, input):
         self.float_input.focus = False
         ani = Animation(x=self.width*2, duration=0.05)
-        ani.start(self.float_input)
+        ani.start(self.__float_input__)
         self.on_model_chage(input)
 
 
     def show_text_input(self, input):
         ani = Animation(x=0, duration=0.05)
         ani.bind(on_complete=self.on_complete)
-        self.float_input.input = input
-        ani.start(self.float_input)
+        self.__float_input__.input = input
+        ani.start(self.__float_input__)
 
 
     def on_complete(self, ani, w):
@@ -225,9 +226,9 @@ class InputForm(RelativeLayout):
         else:
             if hasattr(widget, 'isFormControl'):
                 self.model[widget.name] = widget.text
-            height = self.form_content.parent.height  + widget.height + dp(25)
-            self.form_content.parent.height = height
-            self.form_content.add_widget(widget, 0)
+            height = self.__form_content__.parent.height  + widget.height + dp(25)
+            self.__form_content__.parent.height = height
+            self.__form_content__.add_widget(widget, 0)
 
 
     def add_model(self, model, columns=None, tmpl=None):

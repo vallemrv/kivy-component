@@ -6,7 +6,7 @@
 # @License: Apache license vesion 2.0
 
 #:import res components.resources
-#:import get_color kivy.utils.get_color_from_hex
+#:import datetime datetime.datetime
 
 <LabelDecorators>:
     anchor_x: 'center'
@@ -14,72 +14,75 @@
 
 
 <LabelBase>:
-    border_size: dp(3)
     container: _container
     LabelDecorators:
+        id: _container
         pos: root.pos
         size: root.size
         canvas.before:
             Color:
-                rgb: 0,0,0
+                rgba: 0,0,0,1
             Rectangle:
                 size: self.size
                 pos: self.pos
-        LabelDecorators:
-            id: _container
-            size_hint: None, None
-            size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
-            canvas.before:
-                Color:
-                    rgb: get_color(root.bg_color)
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
+            Color:
+                rgba: root.bg_color
+            Rectangle:
+                size: (root.width-root.border_size, root.height-root.border_size)
+                pos: self.x + root.border_size/2, self.y + root.border_size/2
+
 
 <LabelColor>:
-    color: "#000000"
     Label:
-        size_hint: .9, 1
+        size_hint: .9, .9
         font_size: root.font_size
         text_size: self.size
-        halign: 'left'
-        valign: 'middle'
+        halign: root.halign
+        valign: root.valign
         text: root.text
-        color: get_color(root.color)
+        color: root.color
 
-<LabelClicable>:
-    color: "#000000"
-    Label:
-        size_hint: .9, 1
-        font_size: root.font_size
-        text_size: self.size
-        halign: 'left'
-        valign: 'middle'
-        text: root.text
-        color: get_color(root.color)
 
 
 <LabelIcon>:
     color: "#000000"
     BoxLayout:
         orientation: 'horizontal'
-        size_hint: .9, 1
+        size_hint: .9, .9
         Label:
             id: _label_icon
-            size_hint: .9, 1
+            size_hint: .8, .9
             font_size: root.font_size
             text_size: self.size
-            halign: 'left'
-            valign: 'middle'
+            halign: root.halign
+            valign: root.valign
             text: root.text
-            color: get_color(root.color)
+            color: root.color
         Label:
             id: _label_text
-            size_hint: .1, 1
+            size_hint: .2, 1
             font_name: res.FONT_AWESOME
             font_size: root.font_size
             text_size: self.size
-            halign: 'right'
-            valign: 'middle'
+            halign: root.halign
+            valign: root.valign
             text: root.icon
-            color: get_color(root.color)
+            color: root.color
+
+<FloatLabel>:
+    size_hint: .95, .95
+    anchor_x: "center"
+    anchor_y: root.position
+    __label_widget__: __label_widget
+    RelativeLayout:
+        size_hint: 1, None
+        LabelColor:
+            opacity: .7
+            id: __label_widget
+            clicable: root.clicable
+            color: root.color
+            bg_color: root.bg_color
+            text: root.text
+            size_hint: 1, None
+            pos: root.__pos_widget__
+            on_press: root.press = datetime.now()

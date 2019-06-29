@@ -1,0 +1,70 @@
+#:import datetime datetime.datetime
+
+<FloatButtonWidget>:
+    size_hint: (None, None)
+    size: 70, 70
+    icon: res.FA_EDIT
+    font_size: '10dp'
+    color: 1, 1, 1, 1
+    bg_color: 1, 0, 0, 1
+    canvas.before:
+        Color:
+            rgba: 0,0,0, 1
+        Ellipse:
+            source: res.IMG_SHADOW
+            pos: self.x + ((self.width - self.width * 1.22)/2), self.y + ((self.height - self.height * 1.22)/2)
+            size: self.width * 1.22, self.height * 1.22
+        Color:
+            rgba: 0,0,0,1
+        Ellipse:
+            pos: self.x-2, self.y-2
+            size: self.width, self.height
+        Color:
+            group: '__shape_up__'
+            rgba: root.bg_color
+        Ellipse:
+            group: '__shape_up__'
+            pos: self.x, self.y
+            size: self.width-4, self.height-4
+    Label:
+        font_name: res.FONT_AWESOME
+        font_size: root.font_size
+        text: root.icon
+        color: root.color
+
+
+<FloatButton>:
+    anchor_x: "right"
+    anchor_y: root.align
+    size_hint: .95,.95
+    FloatButtonWidget:
+        size: root.__button_size__
+        icon: root.icon
+        font_size: root.font_size
+        color: root.color
+        bg_color: root.bg_color
+        on_press: root.press = datetime.now()
+        on_release: root.release = datetime.now()
+
+<FloatButtonsGroup>:
+    __content_button__: __content_button
+    __button_principal__: __button_principal
+    anchor_x: 'right'
+    anchor_y: 'bottom'
+    size_hint: .9, .9
+    contador: 0
+    FloatLayout:
+        id: __content_principal
+        size_hint: None, None
+        size: root.__content_button_size__
+        BoxLayout:
+            id: __content_button
+            pos: __content_principal.pos
+            orientation: root.orientation
+            FloatButton:
+                id: __button_principal
+                button_size: root.button_size
+                icon: res.FA_ELLIPSE_V
+                on_press: root.show_buttons()
+                color: root.color
+                bg_color: root.bg_color

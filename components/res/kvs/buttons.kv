@@ -6,18 +6,16 @@
 # @Last modified time: 11-Jul-2017
 # @License: Apache license vesion 2.0
 
-
 #:import res components.resources
-#:import get_color kivy.utils.get_color_from_hex
+#:import datetime datetime.datetime
 
 <Decorators>:
     mywidget: True
     anchor_x: 'center'
     anchor_y: 'center'
 
-
 <ButtonBase>:
-    container: _container
+    __container__: _container
     Decorators:
         pos: root.pos
         size: root.size
@@ -33,7 +31,7 @@
             size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
             canvas.before:
                 Color:
-                    rgb: get_color(root.bg_color)
+                    rgba: root.bg_color
                 Rectangle:
                     size: (self.parent.width-root.border_size, self.parent.height-root.border_size)
                     pos: self.pos
@@ -66,82 +64,40 @@
                 valign: 'middle'
 
 <ButtonImg>:
-    label_container: _label_container
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'center'
-        size_hint: 1, 1
-        GridLayout:
-            id: _label_container
-            cols: 1
-            size_hint: .9, .9
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                Image:
-                    size_hint: 1, 1
-                    source: root.src
-
-
-<ButtonIcon>:
-    label_container: _label_container
-    orientation: 'vertical'
+    __label_container__: _label_container
+    __widget_image__: _img
     AnchorLayout:
         anchor_x: 'center'
         anchor_y: 'center'
         size_hint: 1, 1
         BoxLayout:
             id: _label_container
-            orientation: root.orientation
+            orientation: root.__orientation__
             size_hint: .85, .85
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                size_hint: root.icon_size_hint
-                Label:
-                    font_name: res.FONT_AWESOME
-                    text: root.icon
-                    font_size: root.font_size_icon
-                    color: root.color
-                    text_size: self.size
-                    halign: root.icon_align
-                    valign: 'middle'
+            spacing:dp(5)
+            Image:
+                source: root.src
+                id: _img
 
-
-<FloatButton>:
-    shape: _shape
+<ButtonIcon>:
+    __label_container__: _label_container
+    __widget_icon__: _widget_icon
+    icon_align: 'center'
     AnchorLayout:
-        anchor_y: 'center'
         anchor_x: 'center'
-        pos: root.pos
-        size: root.size
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'center'
-            size_hint: None, 1
-            width: self.height
-            canvas.before:
-                Color:
-                    rgba: 0,0,0,1
-                Rectangle:
-                    source: res.IMG_SHADOW
-                    pos: root.x, root.y
-                    size: self.width, self.width
-            BoxLayout:
-                id: _shape
-                size_hint: .8, .8
-                canvas.before:
-                    Color:
-                        group: 'shape_up'
-                        rgb: get_color(root.bg_color)
-                    Ellipse:
-                        group: 'shape_up'
-                        pos: self.x, self.y
-                        size: self.height, self.height
+        anchor_y: 'center'
+        size_hint: 1, 1
+        BoxLayout:
+            id: _label_container
+            orientation: root.__orientation__
+            size_hint: .85, .85
+            spacing: dp(5)
             Label:
                 font_name: res.FONT_AWESOME
-                font_size: root.font_size
-                pos: root.pos
-                size: root.size
                 text: root.icon
+                font_size: root.font_size_icon
                 color: root.color
+                text_size: self.size
+                halign: "center"
+                valign: 'middle'
+                id: _widget_icon

@@ -1,7 +1,7 @@
 #:import get_color kivy.utils.get_color_from_hex
 #:import LabelColor components.labels.LabelColor
 #:import ButtonIcon components.buttons.ButtonIcon
-#:import FloatButton components.buttons.FloatButton
+#:import FloatButton components.floatbuttons
 #:import res components.resources
 <FormControl>:
     content: _content_control
@@ -10,7 +10,7 @@
         anchor_x: 'center'
         canvas:
             Color:
-                rgba: get_color(root.bg_color)
+                rgba: root.bg_color
             Rectangle:
                 size: self.size
                 pos: self.pos
@@ -55,7 +55,7 @@
                 halign: 'left'
                 valign: 'middle'
                 id: _text
-                color: get_color(root.color)
+                color: root.color
 
 <CheckBoxControl>:
     BoxLayout:
@@ -63,7 +63,7 @@
         size_hint: .9, .9
         canvas:
             Color:
-                rgba: get_color(root.bg_color)
+                rgba: root.bg_color
             Rectangle:
                 size: self.size
                 pos: self.pos
@@ -174,12 +174,12 @@
                 border_size: 0
                 bg_color: '#a5e5f9'
 
-<InputForm>:
-    float_input: _float_input
-    form_content: _form_content
+<Form>:
+    __float_input__: _float_input
+    __form_content__: _form_content
     canvas.before:
         Color:
-            rgba: get_color(self.bg_color)
+            rgba: self.bg_color
         Rectangle:
             size: self.size
             pos: self.pos

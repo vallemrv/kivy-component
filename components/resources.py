@@ -2,7 +2,7 @@
 # @Date:   08-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 19-Feb-2018
+# @Last modified time: 2019-05-08T18:06:50+02:00
 # @License: Apache license vesion 2.0
 
 try:
@@ -10,7 +10,7 @@ try:
 except:
     unichr = chr
 
-    
+
 import os
 
 PATH_RES = os.path.join(os.path.dirname(__file__), "res")
@@ -21,38 +21,78 @@ FONT_AWESOME = os.path.join(PATH_FONT, "fa-solid-900.ttf")
 IMG_SHADOW = os.path.join(PATH_IMG, 'shadow.png')
 IMG_SHADOW_REC = os.path.join(PATH_IMG, 'shadow_rec.png')
 
-FA_ENTER = unichr(0xf090)
-FA_EDIT = unichr(0xf303)
-FA_BOOKS = unichr(0xf02d)
-FA_CHART = unichr(0xf080)
-FA_UNIVERSITY = unichr(0xf19c)
-FA_CUBES = unichr(0xf1b3)
-FA_DATABSE = unichr(0xf1c0)
-FA_COGS = unichr(0xf085)
-FA_TRUCK = unichr(0xf0d1)
-FA_EUR = unichr(0xf153)
+#-- Start with A ---
 FA_ANGLE_RIGHT = unichr(0xf105)
 FA_ANGLE_LEFT = unichr(0xf104)
-FA_CHEVRON_LEFT = unichr(0xf053)
-FA_USERS = unichr(0xf0c0)
-FA_CHECK = unichr(0xf00c)
-FA_LIST = unichr(0xf03a)
-FA_CUBE = unichr(0xf1b2)
-FA_FOLDER = unichr(0xf07b)
-FA_TABLE = unichr(0xf0ce)
-FA_SPINNER = unichr(0xf110)
-FA_CIRCLE = unichr(0xf1ce)
-FA_REFRESH = unichr(0xf021)
-FA_CUTLERY = unichr(0xf0f5)
-FA_PLUS = unichr(0xf067)
-FA_TRASH = unichr(0xf1f8)
-FA_QUESTION = unichr(0xf128)
-FA_HANDSHAK_O = unichr(0xf2b5)
-FA_LEMON = unichr(0xf094)
+
+
+#-- Start with B ---
+FA_BOOKS = unichr(0xf02d)
 FA_BAN = unichr(0xf05e)
-FA_EXIT = unichr(0xf2f5)
+
+#-- Start with C ---
+FA_CUBE = unichr(0xf1b2)
+FA_CUBES = unichr(0xf1b3)
+FA_CHART = unichr(0xf080)
+FA_CHECK = unichr(0xf00c)
+FA_COGS = unichr(0xf085)
 FA_CREDIT_CARD = unichr(0xf09d)
-FA_CHANGE = unichr(0xf362)
+FA_CHEVRON_LEFT = unichr(0xf053)
+FA_CHEVRON_RIGHT = unichr(0xf054)
+FA_CHEVRON_UP = unichr(0xf077)
+FA_CHEVRON_DOWN = unichr(0xf078)
+FA_CUTLERY = unichr(0xf0f5)
+FA_CIRCLE = unichr(0xf1ce)
+
+
+#-- Start with D ---
+FA_DATABSE = unichr(0xf1c0)
+
+#-- Start with E ---
+FA_ENTER = unichr(0xf090)
+FA_EDIT = unichr(0xf303)
+FA_EXIT = unichr(0xf2f5)
+FA_ELLIPSE_V = unichr(0xf142) #Los tres puntitos
+FA_EUR = unichr(0xf153)
+
+#-- Start with F ---
+FA_FOLDER = unichr(0xf07b)
+
+#-- Start with H ---
+FA_HANDSHAK_O = unichr(0xf2b5)
+FA_HEART = unichr(0xf004)
+
+
+#-- Start with L ---
+FA_LIST = unichr(0xf03a)
+FA_LEMON = unichr(0xf094)
+
+#-- Sart with M --
+FA_MINUS = unichr(0xf068)
+
+#-- Start with P ---
+FA_PLUS = unichr(0xf067)
+
+#-- Start with Q ---
+FA_QUESTION = unichr(0xf128)
+
+#-- Start with S ---
+FA_SPINNER = unichr(0xf110)
+FA_REFRESH = unichr(0xf021)
+FA_SEARCH = unichr(0xf002)
+
+#-- Start with T ---
+FA_TRUCK = unichr(0xf0d1)
+FA_TABLE = unichr(0xf0ce)
+FA_TRASH = unichr(0xf1f8)
+
+
+#-- Start with U ---
+FA_UNIVERSITY = unichr(0xf19c)
+FA_USERS = unichr(0xf0c0)
+
+
+
 
 def get_kv(name):
     name = name if "kv" in name else name+".kv"
