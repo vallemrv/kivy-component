@@ -5,7 +5,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 2019-05-26T17:05:41+02:00
+# @Last modified time: 2019-07-05T22:33:51+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -178,7 +178,7 @@ class CheckBoxControl(FormControl):
             self.controller.on_model_chage(self)
 
 class Form(RelativeLayout):
-    bg_color = StringProperty("#ffffff")
+    bg_color = ObjectProperty((1,1,1,1))
     model = DictProperty({})
     on_press = ObjectProperty(None)
     plantilla = DictProperty({
@@ -190,10 +190,17 @@ class Form(RelativeLayout):
                 }
         })
 
+    def on_bg_color(self, w, val):
+        if "#" in val:
+            val = "".join(val)
+            self.bg_color = get_color_from_hex(val)
+        else:
+            self.bg_color = val
+
     __form_content__ = ObjectProperty(None)
 
     def __init__(self, **kargs):
-        super(InputForm, self).__init__(**kargs)
+        super(Form, self).__init__(**kargs)
 
     def __clear_model__(self):
         self.model = {}
@@ -222,7 +229,7 @@ class Form(RelativeLayout):
 
     def add_widget(self, widget):
         if len(self.children) < 3:
-            super(InputForm, self).add_widget(widget)
+            super(Form, self).add_widget(widget)
         else:
             if hasattr(widget, 'isFormControl'):
                 self.model[widget.name] = widget.text

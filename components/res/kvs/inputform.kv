@@ -194,22 +194,7 @@
                 id: _form_content
 
 
-    AnchorLayout:
-        anchor_y: 'center'
-        anchor_x: 'center'
-        size_hint: 1, 1
-        AnchorLayout:
-            anchor_y: 'bottom'
-            anchor_x: 'right'
-            size_hint: .95, .95
-            FloatButton:
-                icon: res.FA_CHECK
-                size_hint: None, None
-                size: dp(70), dp(70)
-                font_size: '20dp'
-                bg_color: '#84cded'
-                color: 0,0,0,1
-                on_release: root.form_check()
+    
 
     FloatControl:
         id: _float_input

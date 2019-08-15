@@ -4,7 +4,7 @@
 # @Date:   06-Feb-2018
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-26T17:08:46+02:00
+# @Last modified time: 2019-07-05T22:27:03+02:00
 # @License: Apache license vesion 2.0
 
 import os
@@ -24,6 +24,7 @@ Config.set("graphics", "resizable", False)
 
 Builder.load_string('''
 #:import . components.pagenavigations
+
 <Main>:
     PageManager:
         id: _manager
@@ -161,6 +162,7 @@ Builder.load_string('''
         Page:
             id_page: 'test_forms'
             title: 'Test forms'
+            Form:
 
 
 ''')
