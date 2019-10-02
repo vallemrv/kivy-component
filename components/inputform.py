@@ -5,13 +5,14 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 2019-07-05T22:33:51+02:00
+# @Last modified time: 2019-09-12T16:57:41+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import ButtonBehavior
+from kivy.utils import get_color_from_hex, get_hex_from_color
 from kivy.properties import (StringProperty, ObjectProperty, OptionProperty,
                              ListProperty, DictProperty, BooleanProperty, AliasProperty)
 from kivy.lang import Builder
@@ -122,11 +123,25 @@ class FloatControl(RelativeLayout):
 class FormControl(RelativeLayout):
     label = StringProperty("")
     text = StringProperty("")
-    color = StringProperty("#000000")
-    bg_color = StringProperty("#ffffff")
+    color = ObjectProperty((0,0,0,1))
+    bg_color = StringProperty((1,1,1,1))
     font_size = StringProperty("30dp")
     controller = ObjectProperty(None)
     name = StringProperty("")
+
+    def on_color(self, w, val):
+        if "#" in val:
+            val = "".join(val)
+            self.color = get_color_from_hex(val)
+        else:
+            self.color = val
+
+    def on_bg_color(self, root, val):
+        if "#" in val:
+            val = "".join(val)
+            self.bg_color = get_color_from_hex(val)
+        else:
+            self.bg_color = val
 
     def __init__(self, model=None, **kargs):
         self.isFormControl = True
@@ -231,6 +246,7 @@ class Form(RelativeLayout):
         if len(self.children) < 3:
             super(Form, self).add_widget(widget)
         else:
+            
             if hasattr(widget, 'isFormControl'):
                 self.model[widget.name] = widget.text
             height = self.__form_content__.parent.height  + widget.height + dp(25)
