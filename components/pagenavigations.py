@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 2019-05-26T17:08:44+02:00
+# @Last modified time: 2019-10-07T00:36:44+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -14,6 +14,8 @@ from kivy.animation import Animation
 from kivy.lang import Builder
 import components.resources as res
 
+from datetime import  datetime
+
 Builder.load_file(res.get_kv("pagenavigations"))
 
 
@@ -23,6 +25,8 @@ class Page(RelativeLayout):
     title_bg_color = StringProperty((1,1,1,1))
     id_page = StringProperty(None)
     bg_color = ObjectProperty((1,1,1,1))
+    manager = ObjectProperty(None)
+    show = ObjectProperty(None)
 
     __main__ = BooleanProperty(False)
     __button_back__ = ObjectProperty(None)
@@ -30,8 +34,6 @@ class Page(RelativeLayout):
     def on___button_back__(self, w, val):
         if self.__main__:
             self.__head__.remove_widget(self.__button_back__)
-
-
 
     def on_bg_color(self, w, val):
         if type(val) is str and "#" in val:
@@ -63,7 +65,7 @@ class PageManager(FloatLayout):
 
 
     def add_widget(self, widget):
-        if type(widget) is Page:
+        if hasattr(widget, 'id_page'):
             widget.manager = self
             widget.bind(id_page=self.on_id_pages)
             super(PageManager,self).add_widget(widget)
@@ -89,9 +91,11 @@ class PageManager(FloatLayout):
             self.add_widget(w)
             ai = Animation(x=0, duration=.1)
             ai.start(w)
+            w.show = datetime.now()
 
     def back_page(self):
         if len(self.stack_pages) > 1:
             w = self.stack_pages.pop()
             ai = Animation(x=self.width+10, duration=.1)
             ai.start(w)
+            self.stack_pages[-1].show = datetime.now()

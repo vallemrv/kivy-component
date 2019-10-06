@@ -2,7 +2,7 @@
 # @Date:   08-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-08T18:06:50+02:00
+# @Last modified time: 2019-10-03T04:52:05+02:00
 # @License: Apache license vesion 2.0
 
 try:
@@ -53,7 +53,10 @@ FA_ENTER = unichr(0xf090)
 FA_EDIT = unichr(0xf303)
 FA_EXIT = unichr(0xf2f5)
 FA_ELLIPSE_V = unichr(0xf142) #Los tres puntitos
+FA_ELLIPSE_H = unichr(0xf141) #Los tres puntitos
 FA_EUR = unichr(0xf153)
+FA_EYE_SLASH = unichr(0xf070)
+FA_EYE = unichr(0xf06e)
 
 #-- Start with F ---
 FA_FOLDER = unichr(0xf07b)
@@ -67,8 +70,11 @@ FA_HEART = unichr(0xf004)
 FA_LIST = unichr(0xf03a)
 FA_LEMON = unichr(0xf094)
 
-#-- Sart with M --
+#-- Start with M --
 FA_MINUS = unichr(0xf068)
+
+#-- Start with N --
+FA_NETWORK = unichr(0xf6ff)
 
 #-- Start with P ---
 FA_PLUS = unichr(0xf067)
@@ -76,9 +82,11 @@ FA_PLUS = unichr(0xf067)
 #-- Start with Q ---
 FA_QUESTION = unichr(0xf128)
 
+#-- Start with R ---
+FA_REFRESH = unichr(0xf021)
+
 #-- Start with S ---
 FA_SPINNER = unichr(0xf110)
-FA_REFRESH = unichr(0xf021)
 FA_SEARCH = unichr(0xf002)
 
 #-- Start with T ---

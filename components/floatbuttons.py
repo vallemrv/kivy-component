@@ -2,7 +2,7 @@
 # @Date:   2019-05-07T12:32:34+02:00
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-08T18:13:30+02:00
+# @Last modified time: 2019-10-07T01:14:03+02:00
 # @License: Apache License v2.0
 
 from kivy.properties import (ObjectProperty, StringProperty, AliasProperty,
@@ -41,7 +41,6 @@ class FloatButtonBase(AnchorLayout):
 
 
     __button_size__ = AliasProperty(get_button_size, bind=["button_size"])
-
 
 class FloatButtonWidget(ButtonBehavior, AnchorLayout):
 
@@ -92,6 +91,7 @@ class FloatButtonsGroup(AnchorLayout):
     animate = BooleanProperty(True)
 
 
+    __primera_vez__ = BooleanProperty(True)
     __content_button_height__ = NumericProperty("50dp")
     __show_buttons__ = BooleanProperty(False)
     __lista_buttons__ = ListProperty([])
@@ -122,9 +122,10 @@ class FloatButtonsGroup(AnchorLayout):
         if not self.__show_buttons__ and self.animate:
             Clock.schedule_once(partial(self.on___show_buttons__,
                                         self, bool(self.__show_buttons__)), .5)
-        else:
+        elif not self.animate and self.__primera_vez__:
+            self.__primera_vez__ = False
             self.__content_button__.remove_widget(self.__button_principal__)
-            
+
 
 
     def __init__(self, **kargs):
@@ -132,15 +133,16 @@ class FloatButtonsGroup(AnchorLayout):
 
 
     def on___show_buttons__(self, w, val, *dt):
-        time = 0.1
-        duration = 0.5 if self.width > 800 else 0.2
-        for w in self.__lista_buttons__:
-            if val:
-                x = -dp(self.width)
-            else:
-                x = dp(self.width)
-            time += 0.1
-            Clock.schedule_once(partial(self.start_animation, w, x, duration), time)
+        if self.animate:
+            time = 0.1
+            duration = 0.05
+            for w in self.__lista_buttons__:
+                if val:
+                    x = -dp(100 if self.orientation == "vertical" else 400)
+                else:
+                    x = dp(100 if self.orientation == "vertical" else 400)
+                time += 0.1
+                Clock.schedule_once(partial(self.start_animation, w, x, duration), time)
 
     def start_animation(self, w, x, duration, dt):
         ani = Animation(x=w.x + x, duration=duration)

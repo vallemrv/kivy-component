@@ -106,7 +106,8 @@ class LabelBase(ButtonBehavior, Widget):
 
 
 class LabelColor(LabelBase):
-    pass
+    def on_text(self, w, v):
+        pass
 
 class LabelIcon(LabelBase):
     icon = StringProperty(res.FA_ANGLE_RIGHT)

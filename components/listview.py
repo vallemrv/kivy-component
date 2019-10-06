@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: listview.py
 # @Last modified by:   valle
-# @Last modified time: 2019-05-11T20:28:55+02:00
+# @Last modified time: 2019-10-07T00:17:24+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.scrollview import ScrollView
@@ -42,12 +42,12 @@ class MenuListView(AnchorLayout):
     bg_color = ObjectProperty((1,1,1,1))
     row_height = NumericProperty("70dp")
 
-    def on_color(self, w, val):
+    def on_bg_color(self, w, val):
         if "#" in val:
             val = "".join(val)
-            self.color = get_color_from_hex(val)
+            self.bg_color = get_color_from_hex(val)
         else:
-            self.color = val
+            self.bg_color = val
 
     def add_widget(self, widget):
         if type(widget) is ScrollView:
@@ -67,3 +67,6 @@ class MenuListView(AnchorLayout):
 
     def scroll_up(self, up=1):
         self.__scroll__.scroll_y = up
+
+    def get_lineas(self):
+        return self.__list__.children
