@@ -13,12 +13,7 @@ import sys
 import websocket
 import json
 import time
-try:
-    import thread
-except ImportError:
-    import _thread as thread
-import time
-
+import threading
 
 class WSManager(EventDispatcher):
 
@@ -27,16 +22,22 @@ class WSManager(EventDispatcher):
     def __init__(self, url, controller):
         self.controller = controller
         self.url = url
-        thread.start_new_thread(self.run_websoker, ())
+        threading.Thread(target=self.run_websoker).start()
 
     def on_closed(self, w, v):
         if self.closed:
             self.ws.close()
 
+    def stop(self):
+        self.closed = True
+        self.ws.close()
+
     def on_message(self, message):
         if self.controller and hasattr(self.controller, "onMessage"):
-            if (type(message) == str):
+            try:
                 message = json.loads(message)
+            except:
+                pass
             Clock.schedule_once(partial(self.controller.onMessage, message), 0.5)
         else:
             print(message+ "  No implementado onMessage en el controlador")
