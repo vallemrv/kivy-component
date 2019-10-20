@@ -4,7 +4,7 @@
 # @Date:   09-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-12T01:26:52+02:00
+# @Last modified time: 2019-10-19T15:54:51+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.button import Button
@@ -22,9 +22,10 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.metrics import dp
 from kivy.logger import Logger
-import components.resources as res
+from components.resources import Res as res
+from components.resources import get_kv
 
-Builder.load_file(res.get_kv("buttons"))
+Builder.load_file(get_kv("buttons"))
 
 class Decorators(AnchorLayout):
     def __init__(self, **kargs):
@@ -34,7 +35,7 @@ class ButtonBase(ButtonBehavior, Widget):
     #Para guardar datos en el boton y recuperarlas
     #despues en el evento.
     tag = ObjectProperty(None, allownone=True)
-    #Colores del boton texto y fondo acepta hexagesimal y rgba
+    #Colores del boton texto y fondo acepta hexadecimal y rgba
     bg_color = ObjectProperty([.5, .5, .5, 1])
     color = ObjectProperty([1, 1, 1, 1])
     font_size = ObjectProperty("20dp")

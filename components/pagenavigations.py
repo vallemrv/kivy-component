@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: pagenavigations.py
 # @Last modified by:   valle
-# @Last modified time: 2019-10-07T00:36:44+02:00
+# @Last modified time: 2019-10-19T02:11:49+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -12,11 +12,11 @@ from kivy.properties import (StringProperty, ListProperty, NumericProperty,
                              ObjectProperty, DictProperty, BooleanProperty)
 from kivy.animation import Animation
 from kivy.lang import Builder
-import components.resources as res
-
+from components.resources import get_kv
+from components.resources import Res as res
 from datetime import  datetime
 
-Builder.load_file(res.get_kv("pagenavigations"))
+Builder.load_file(get_kv("pagenavigations"))
 
 
 #They are the ones that contain the pages of the application

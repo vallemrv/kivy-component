@@ -1,4 +1,5 @@
 #:import datetime datetime.datetime
+#:import path components.resources.Path
 
 <FloatButtonWidget>:
     size_hint: (None, None)
@@ -11,7 +12,7 @@
         Color:
             rgba: 0,0,0, 1
         Ellipse:
-            source: res.IMG_SHADOW
+            source: path.IMG_SHADOW
             pos: self.x + ((self.width - self.width * 1.22)/2), self.y + ((self.height - self.height * 1.22)/2)
             size: self.width * 1.22, self.height * 1.22
         Color:
@@ -27,7 +28,7 @@
             pos: self.x, self.y
             size: self.width-4, self.height-4
     Label:
-        font_name: res.FONT_AWESOME
+        font_name: path.FONT_AWESOME
         font_size: root.font_size
         text: root.icon
         color: root.color

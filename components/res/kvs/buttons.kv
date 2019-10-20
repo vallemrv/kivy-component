@@ -6,7 +6,7 @@
 # @Last modified time: 11-Jul-2017
 # @License: Apache license vesion 2.0
 
-#:import res components.resources
+#:import path components.resources.Path
 #:import datetime datetime.datetime
 
 <Decorators>:
@@ -45,7 +45,7 @@
             anchor_y: 'top'
             Label:
                 id: _label_selected
-                font_name: res.FONT_AWESOME
+                font_name: path.FONT_AWESOME
                 color: root.color
                 size_hint: None, None
                 size: dp(50), dp(50)
@@ -93,7 +93,7 @@
             size_hint: .85, .85
             spacing: dp(5)
             Label:
-                font_name: res.FONT_AWESOME
+                font_name: path.FONT_AWESOME
                 text: root.icon
                 font_size: root.font_size_icon
                 color: root.color

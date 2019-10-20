@@ -2,7 +2,7 @@
 # @Date:   11-Jul-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-10T01:36:21+02:00
+# @Last modified time: 2019-10-19T02:13:21+02:00
 # @License: Apache license vesion 2.0
 
 
@@ -23,9 +23,10 @@ from kivy.clock import Clock
 from kivy.animation import Animation
 from math import ceil
 from datetime import datetime
-import components.resources as res
+from components.resources import Res as res
+from components.resources import get_kv
 
-Builder.load_file(res.get_kv("labels"))
+Builder.load_file(get_kv("labels"))
 
 class LabelDecorators(AnchorLayout):
     def __init__(self, **kargs):
@@ -154,7 +155,7 @@ class FloatLabel(AnchorLayout):
         super(FloatLabel, self).__init__(**kargs)
 
 
-    def show_label(self):
+    def show(self):
         if not self.__show__:
             self.__show__ = True
             y = self.height if self.position == 'bottom' else -self.height

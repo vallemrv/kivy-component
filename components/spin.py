@@ -3,23 +3,23 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: spin.py
 # @Last modified by:   valle
-# @Last modified time: 06-Feb-2018
+# @Last modified time: 2019-10-19T13:15:06+02:00
 # @License: Apache license vesion 2.0
 
 
-from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty, NumericProperty
 from kivy.animation import Animation
 from kivy.lang import Builder
+from kivy.clock import Clock
 
 Builder.load_string('''
-#:import res components.resources
+#:import path components.resources.Path
+#:import res components.resources.Res
 <Spin>:
     spin_label: _spin_label
-    anchor_x: 'center'
-    anchor_x: 'center'
     size_hint: 1, 1
-    pos: self.width+10, 0
+    pos: 1000, 0
     canvas:
         Color:
             rgba: 0,0,0,.3
@@ -36,24 +36,29 @@ Builder.load_string('''
                 origin: self.center
         canvas.after:
             PopMatrix
-        font_name: res.FONT_AWESOME
+        font_name: path.FONT_AWESOME
         font_size: dp(50)
         text: res.FA_SPINNER
         size_hint: .5, .5
                 ''')
 
 
-class Spin(AnchorLayout):
+class Spin(FloatLayout):
     bussy = BooleanProperty(False)
     angle = NumericProperty(0)
+
+    def on_size(self, w, v):
+        if not self.bussy:
+            self.hide()
 
     def __init__(self, **kargs):
         super(Spin, self).__init__(**kargs)
         self.anim = Animation(angle = 360, duration=1.5)
         self.anim += Animation(angle = 360, duration=1.5)
         self.anim.repeat = True
-
-
+        def hide(st):
+            self.hide()
+        Clock.schedule_once(hide, 1)
 
     def on_bussy(self, w, val):
         if self.spin_label:

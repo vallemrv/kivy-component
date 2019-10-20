@@ -5,7 +5,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: imputform.py
 # @Last modified by:   valle
-# @Last modified time: 2019-09-12T16:57:41+02:00
+# @Last modified time: 2019-10-19T02:13:07+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.relativelayout import RelativeLayout
@@ -18,9 +18,10 @@ from kivy.properties import (StringProperty, ObjectProperty, OptionProperty,
 from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.metrics import dp
-import components.resources as res
+from components.resources import Res as res
+from components.resources import get_kv
 
-Builder.load_file(res.get_kv('inputform'))
+Builder.load_file(get_kv('inputform'))
 
 tipo = [
     'CharField', 'DecimalField', 'DateField',
@@ -246,7 +247,7 @@ class Form(RelativeLayout):
         if len(self.children) < 3:
             super(Form, self).add_widget(widget)
         else:
-            
+
             if hasattr(widget, 'isFormControl'):
                 self.model[widget.name] = widget.text
             height = self.__form_content__.parent.height  + widget.height + dp(25)

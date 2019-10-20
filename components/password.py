@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: password.py
 # @Last modified by:   valle
-# @Last modified time: 06-Feb-2018
+# @Last modified time: 2019-10-19T02:10:05+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.anchorlayout import AnchorLayout
@@ -11,9 +11,10 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty, ListProperty, NumericProperty
 from kivy.clock import Clock
 from random import shuffle
+
 Builder.load_string('''
 #:import Botonera components.botonera.Botonera
-#:import res components.resources
+#:import res components.resources.Res
 <Password>:
     botonera: _botonera
     textInput: _textInput

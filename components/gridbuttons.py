@@ -4,7 +4,7 @@
 # @Date:   10-May-2017
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-05-26T16:27:29+02:00
+# @Last modified time: 2019-10-19T02:08:06+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.anchorlayout import AnchorLayout
@@ -17,7 +17,7 @@ from kivy.metrics import dp
 from components.buttons import ButtonColor, ButtonIcon, ButtonImg
 from math import ceil
 from datetime import datetime
-import components.resources as res
+from components.resources import Res as res
 
 Builder.load_string('''
 #:import res components.resources

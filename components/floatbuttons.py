@@ -2,7 +2,7 @@
 # @Date:   2019-05-07T12:32:34+02:00
 # @Email:  valle.mrv@gmail.com
 # @Last modified by:   valle
-# @Last modified time: 2019-10-07T01:14:03+02:00
+# @Last modified time: 2019-10-19T02:12:49+02:00
 # @License: Apache License v2.0
 
 from kivy.properties import (ObjectProperty, StringProperty, AliasProperty,
@@ -20,9 +20,10 @@ from kivy.utils import get_color_from_hex
 from kivy.clock import Clock
 from kivy.animation import Animation
 from functools import partial
-import components.resources as res
+from components.resources import Res as res
+from components.resources import get_kv
 
-Builder.load_file(res.get_kv("floatbuttons"))
+Builder.load_file(get_kv("floatbuttons"))
 
 class FloatButtonBase(AnchorLayout):
     icon = StringProperty(res.FA_EDIT)
@@ -138,9 +139,9 @@ class FloatButtonsGroup(AnchorLayout):
             duration = 0.05
             for w in self.__lista_buttons__:
                 if val:
-                    x = -dp(100 if self.orientation == "vertical" else 400)
+                    x = -dp(400)
                 else:
-                    x = dp(100 if self.orientation == "vertical" else 400)
+                    x = dp(400)
                 time += 0.1
                 Clock.schedule_once(partial(self.start_animation, w, x, duration), time)
 

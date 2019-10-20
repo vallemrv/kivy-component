@@ -3,7 +3,7 @@
 # @Email:  valle.mrv@gmail.com
 # @Filename: listview.py
 # @Last modified by:   valle
-# @Last modified time: 2019-10-07T00:17:24+02:00
+# @Last modified time: 2019-10-19T02:46:44+02:00
 # @License: Apache license vesion 2.0
 
 from kivy.uix.scrollview import ScrollView
@@ -12,9 +12,7 @@ from kivy.lang import Builder
 from kivy.properties import StringProperty, ObjectProperty, ListProperty, NumericProperty
 from kivy.utils import get_color_from_hex
 
-
 Builder.load_string('''
-#:import get_color kivy.utils.get_color_from_hex
 <MenuListView>:
     __list__: _listado
     __scroll__: _scroll
