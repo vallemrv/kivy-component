@@ -61,6 +61,8 @@ class FloatButtonWidget(ButtonBehavior, AnchorLayout):
         self.__shape_down__.add(color)
         self.__shape_down__.add(Ellipse(pos=self.pos, size=self.size))
         self.canvas.add(self.__shape_down__)
+        if hasattr(self.parent, "group"):
+            self.parent.group.show()
         super(FloatButtonWidget, self).on_press()
 
     def on_release(self):
@@ -150,13 +152,14 @@ class FloatButtonsGroup(AnchorLayout):
         ani.start(w)
 
 
-    def show_buttons(self, *args):
+    def show(self, *args):
         self.__show_buttons__ = not self.__show_buttons__
 
 
     def add_widget(self, w):
         if type(w) is FloatButton:
             w.button_size = self.button_size
+            w.group = self
             self.__content_button__.remove_widget(self.__button_principal__)
             self.__content_button_height__ +=  self.button_size + dp(10)
             self.__content_button__.add_widget(w)

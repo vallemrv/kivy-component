@@ -47,18 +47,19 @@ class Spin(FloatLayout):
     bussy = BooleanProperty(False)
     angle = NumericProperty(0)
 
-    def on_size(self, w, v):
-        if not self.bussy:
-            self.hide()
+
+    def on_pos(self, w, v):
+        if v[0]==0 and not self.bussy:
+            def hide(t):
+                self.hide()
+            Clock.schedule_once(hide, 0.2)
+
 
     def __init__(self, **kargs):
         super(Spin, self).__init__(**kargs)
         self.anim = Animation(angle = 360, duration=1.5)
         self.anim += Animation(angle = 360, duration=1.5)
         self.anim.repeat = True
-        def hide(st):
-            self.hide()
-        Clock.schedule_once(hide, 1)
 
     def on_bussy(self, w, val):
         if self.spin_label:
